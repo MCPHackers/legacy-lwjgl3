@@ -29,46 +29,56 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.lwjgl.opengl;
+package org.lwjgl.util.glu;
 
-import javax.annotation.Nullable;
-
-import org.lwjgl.LWJGLException;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
- * Created by gudenau on 5/31/2017.
- * <p>
- * LWJGL3
+ * PixelStoreState.java
+ *
+ *
+ * Created 11-jan-2004
+ * @author Erik Duijs
  */
-public class GLContext {
-    private static final ThreadLocal<ContextCapabilities> current_capabilities = new ThreadLocal<>();
+class PixelStoreState extends Util {
 
-    public static ContextCapabilities getCapabilities() {
-        ContextCapabilities caps = getCapabilitiesImpl();
-        if (caps == null) {
-            //throw new RuntimeException("No OpenGL context found in the current thread.");
-            try {
-                ContextCapabilities created = new ContextCapabilities(false);
-                setCapabilities(created);
-                return created;
-            } catch (LWJGLException e) {
-                //e.printStackTrace();
-                throw new RuntimeException("No OpenGL context found in the current thread and could not create!", e);
-            }
-        }
+	public int unpackRowLength;
+	public int unpackAlignment;
+	public int unpackSkipRows;
+	public int unpackSkipPixels;
+	public int packRowLength;
+	public int packAlignment;
+	public int packSkipRows;
+	public int packSkipPixels;
 
-        return caps;
-    }
+	/**
+	 * Constructor for PixelStoreState.
+	 */
+	PixelStoreState() {
+		super();
+		load();
+	}
 
-    private static @Nullable ContextCapabilities getCapabilitiesImpl() {
-        return getThreadLocalCapabilities();
-    }
+	public void load() {
+		unpackRowLength = glGetInteger(GL_UNPACK_ROW_LENGTH);
+		unpackAlignment = glGetInteger(GL_UNPACK_ALIGNMENT);
+		unpackSkipRows = glGetInteger(GL_UNPACK_SKIP_ROWS);
+		unpackSkipPixels = glGetInteger(GL_UNPACK_SKIP_PIXELS);
+		packRowLength = glGetInteger(GL_PACK_ROW_LENGTH);
+		packAlignment = glGetInteger(GL_PACK_ALIGNMENT);
+		packSkipRows = glGetInteger(GL_PACK_SKIP_ROWS);
+		packSkipPixels = glGetInteger(GL_PACK_SKIP_PIXELS);
+	}
 
-    private static @Nullable ContextCapabilities getThreadLocalCapabilities() {
-        return current_capabilities.get();
-    }
+	public void save() {
+		glPixelStorei(GL_UNPACK_ROW_LENGTH, unpackRowLength);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, unpackAlignment);
+		glPixelStorei(GL_UNPACK_SKIP_ROWS, unpackSkipRows);
+		glPixelStorei(GL_UNPACK_SKIP_PIXELS, unpackSkipPixels);
+		glPixelStorei(GL_PACK_ROW_LENGTH, packRowLength);
+		glPixelStorei(GL_PACK_ALIGNMENT, packAlignment);
+		glPixelStorei(GL_PACK_SKIP_ROWS, packSkipRows);
+		glPixelStorei(GL_PACK_SKIP_PIXELS, packSkipPixels);
+	}
 
-    static void setCapabilities(ContextCapabilities capabilities) {
-        current_capabilities.set(capabilities);
-    }
 }

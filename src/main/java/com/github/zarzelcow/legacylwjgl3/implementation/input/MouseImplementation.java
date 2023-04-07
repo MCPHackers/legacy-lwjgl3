@@ -8,6 +8,8 @@ import java.nio.IntBuffer;
  * @created 28/09/2022 - 8:58 PM
  */
 public interface MouseImplementation {
+	int getNativeCursorCapabilities();
+	
     void createMouse();
 
     void destroyMouse();

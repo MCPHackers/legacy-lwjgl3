@@ -33,6 +33,7 @@ public class GLFWMouseImplementation implements MouseImplementation {
     private int accum_dz;
     private byte[] button_states = new byte[this.getButtonCount()];
     private long last_event_nanos;
+    private boolean firstMove = true;
 
     @Override
     public void createMouse() {
@@ -52,6 +53,14 @@ public class GLFWMouseImplementation implements MouseImplementation {
             int y = Display.getHeight() - 1 - (int) ypos; // I don't know why but this un-inverts the y motion of mouse inputs
             int dx = x - last_x;
             int dy = y - last_y;
+            //TODO mouse input is faster in lwjgl2?
+            //Needed to fix initial mouse delta
+            if(firstMove) {
+            	firstMove = false;
+            	dx = dy = 0;
+                last_x = x;
+                last_y = y;
+            }
             if (dx != 0 || dy != 0) {
                 accum_dx += dx;
                 accum_dy += dy;
@@ -126,9 +135,13 @@ public class GLFWMouseImplementation implements MouseImplementation {
 
     @Override
     public void setCursorPosition(int x, int y) {
-//        this.last_x = x;
-//        this.last_y = y;
+        this.last_x = x;
+        this.last_y = y;
+        int mode = GLFW.glfwGetInputMode(this.windowHandle, GLFW.GLFW_CURSOR);
+        // Has to be GLFW_CURSOR_NORMAL because GLFW_CURSOR_DISABLED ignores this call
+        GLFW.glfwSetInputMode(this.windowHandle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
         GLFW.glfwSetCursorPos(this.windowHandle, x, y);
+        GLFW.glfwSetInputMode(this.windowHandle, GLFW.GLFW_CURSOR, mode);
     }
 
     @Override
@@ -152,4 +165,9 @@ public class GLFWMouseImplementation implements MouseImplementation {
     public boolean isInsideWindow() {
         return this.isInsideWindow;
     }
+
+	@Override
+	public int getNativeCursorCapabilities() {
+		return 0;
+	}
 }

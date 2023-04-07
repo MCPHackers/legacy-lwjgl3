@@ -1,8 +1,7 @@
 plugins {
-    id 'fabric-loom' version "1.0-SNAPSHOT" // To use chocoloom, change the version to a commit hash
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'maven-publish'
-    id "org.jetbrains.kotlin.jvm" version "1.6.10"
+	id 'java'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -21,22 +20,9 @@ repositories {
     mavenCentral()
 }
 
-loom {
-    setIntermediaryUrl('https://maven.legacyfabric.net/net/fabricmc/intermediary/%1$s/intermediary-%1$s-v2.jar')
-    // Only needed for versions not available from vanilla launcher by default.
-    // customMinecraftManifest.set("https://meta.legacyfabric.net/v2/manifest/${minecraft_version}")
-
-    // Required by 1.7.x
-    // runs {
-    // 	client {
-    // 		programArgs "--userProperties", "{}"
-    // 	}
-    // }
-}
-
 import org.gradle.internal.os.OperatingSystem
 
-project.ext.lwjglVersion = "3.3.1"
+project.ext.lwjglVersion = "3.3.2"
 switch (OperatingSystem.current()) {
     case OperatingSystem.LINUX:
         project.ext.lwjglNatives = "natives-linux"
@@ -47,38 +33,19 @@ switch (OperatingSystem.current()) {
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.legacyfabric:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
-    implementation("org.jetbrains.kotlin:kotlin-stdlib")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-common")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8") // dekotlinify soon :sob:
-
-    implementation("org.javassist:javassist:3.29.2-GA")
     implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
 
     implementation "org.lwjgl:lwjgl"
     implementation "org.lwjgl:lwjgl-glfw"
     implementation "org.lwjgl:lwjgl-openal"
     implementation "org.lwjgl:lwjgl-opengl"
+    implementation "org.lwjgl.lwjgl:lwjgl:2.9.3"
     runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
-}
-
-configurations.all {
-    exclude group: "org.lwjgl.lwjgl"
-}
-
-processResources {
-    inputs.property "version", project.version
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
-    }
 }
 
 // ensure that the encoding is set to UTF-8, no matter what the system default is
@@ -87,11 +54,6 @@ processResources {
 tasks.withType(JavaCompile).configureEach {
     it.options.encoding = "UTF-8"
     if (JavaVersion.current().isJava9Compatible()) it.options.release = 8
-}
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 }
 
 java {
@@ -126,12 +88,6 @@ shadowJar {
         include(dependency("org.lwjgl:lwjgl-openal:$lwjglVersion"))
         include(dependency("org.lwjgl:lwjgl-opengl:$lwjglVersion"))
     }
-}
-
-task remapShadowJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: shadowJar) {
-    input = shadowJar.archiveFile
-    archiveFileName = "${archivesBaseName}-${project.version}-all-remapped.jar"
-    addNestedDependencies = false
 }
 
 // configure the maven publication

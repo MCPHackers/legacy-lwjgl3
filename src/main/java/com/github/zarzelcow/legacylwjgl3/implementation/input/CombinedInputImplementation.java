@@ -3,6 +3,8 @@ package com.github.zarzelcow.legacylwjgl3.implementation.input;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
+import org.lwjgl.opengl.InputImplementation;
+
 /**
  * @author Zarzelcow
  * @created 28/09/2022 - 3:23 PM
@@ -38,6 +40,11 @@ public class CombinedInputImplementation implements InputImplementation {
     }
 
     // ~~~~~ MOUSE ~~~~~
+    
+    @Override
+    public int getNativeCursorCapabilities() {
+    	return 0;
+    }
 
     @Override
     public void createMouse() {

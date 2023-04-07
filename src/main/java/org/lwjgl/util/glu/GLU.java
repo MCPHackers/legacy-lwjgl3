@@ -31,10 +31,11 @@
  */
 package org.lwjgl.util.glu;
 
+import static org.lwjgl.opengl.GL11.glOrtho;
+
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-
-import static org.lwjgl.opengl.GL11.*;
 
 
 /**
@@ -357,6 +358,56 @@ public class GLU {
     public static boolean gluCheckExtension(String extName, String extString) {
         return Registry.gluCheckExtension(extName, extString);
     }
+
+	/**
+	 * Method gluBuild2DMipmaps
+	 * @param target
+	 * @param components
+	 * @param width
+	 * @param height
+	 * @param format
+	 * @param type
+	 * @param data
+	 * @return int
+	 */
+	public static int gluBuild2DMipmaps(
+			int target,
+			int components,
+			int width,
+			int height,
+			int format,
+			int type,
+			ByteBuffer data) {
+
+		return MipMap.gluBuild2DMipmaps(target, components, width, height, format, type, data);
+	}
+
+	/**
+	 * Method gluScaleImage.
+	 * @param format
+	 * @param widthIn
+	 * @param heightIn
+	 * @param typeIn
+	 * @param dataIn
+	 * @param widthOut
+	 * @param heightOut
+	 * @param typeOut
+	 * @param dataOut
+	 * @return int
+	 */
+	public static int gluScaleImage(
+			int format,
+			int widthIn,
+			int heightIn,
+			int typeIn,
+			ByteBuffer dataIn,
+			int widthOut,
+			int heightOut,
+			int typeOut,
+			ByteBuffer dataOut) {
+
+		return MipMap.gluScaleImage(format, widthIn, heightIn, typeIn, dataIn, widthOut, heightOut, typeOut, dataOut);
+	}
 
     public static String gluErrorString(int error_code) {
         switch (error_code) {
