@@ -37,6 +37,10 @@ public class GLFWMouseImplementation implements MouseImplementation {
 
     @Override
     public void createMouse() {
+        // FIXME: NEVER DESTROY MOUSE OR KEYBOARD BECAUSE LINUX SEEMS TO BE UNABLE TO FREE CALLBACK POINTERS PROPERLY
+        if(buttonCallback != null) {
+            return;
+        }
         this.windowHandle = Display.getHandle();
 
         if (GLFW.glfwRawMouseMotionSupported() && !Mouse.getPrivilegedBoolean("org.lwjgl.input.Mouse.disableRawInput"))
@@ -56,8 +60,8 @@ public class GLFWMouseImplementation implements MouseImplementation {
             //TODO mouse input is faster in lwjgl2?
             //Needed to fix initial mouse delta
             if(firstMove) {
-            	firstMove = false;
-            	dx = dy = 0;
+                firstMove = false;
+                dx = dy = 0;
                 last_x = x;
                 last_y = y;
             }
@@ -103,10 +107,10 @@ public class GLFWMouseImplementation implements MouseImplementation {
 
     @Override
     public void destroyMouse() {
-        this.buttonCallback.free();
-        this.posCallback.free();
-        this.scrollCallback.free();
-        this.cursorEnterCallback.free();
+        // this.buttonCallback.free();
+        // this.posCallback.free();
+        // this.scrollCallback.free();
+        // this.cursorEnterCallback.free();
     }
 
     private void reset() {
@@ -166,8 +170,8 @@ public class GLFWMouseImplementation implements MouseImplementation {
         return this.isInsideWindow;
     }
 
-	@Override
-	public int getNativeCursorCapabilities() {
-		return 0;
-	}
+    @Override
+    public int getNativeCursorCapabilities() {
+        return 0;
+    }
 }

@@ -263,7 +263,7 @@ public class AL10 {
 
     @NativeType("ALvoid")
     public static void alListener(@NativeType("ALenum") int paramName, @NativeType("ALfloat const *") FloatBuffer values) {
-    	alListenerfv(paramName, values);
+        alListenerfv(paramName, values);
     }
 
     @NativeType("ALvoid")
@@ -420,7 +420,7 @@ public class AL10 {
 
     @NativeType("ALvoid")
     public static void alSource(@NativeType("ALuint") int source, @NativeType("ALenum") int param, @NativeType("ALfloat const *") FloatBuffer values) {
-    	alSourcefv(source, param, values);
+        alSourcefv(source, param, values);
     }
 
     @NativeType("ALvoid")
@@ -622,7 +622,7 @@ public class AL10 {
 
     @NativeType("ALvoid")
     public static void alSourceStop(@NativeType("ALuint const *") IntBuffer sources) {
-    	alSourceStopv(sources);
+        alSourceStopv(sources);
     }
 
     @NativeType("ALvoid")

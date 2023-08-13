@@ -1,12 +1,15 @@
 package com.github.zarzelcow.legacylwjgl3.implementation.glfw;
 
-import org.lwjgl.glfw.*;
-import com.github.zarzelcow.legacylwjgl3.implementation.input.KeyboardImplementation;
+import java.nio.ByteBuffer;
+
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWCharCallback;
+import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.EventQueue;
 
-import java.nio.ByteBuffer;
+import com.github.zarzelcow.legacylwjgl3.implementation.input.KeyboardImplementation;
 
 /**
  * @author Zarzelcow
@@ -24,6 +27,10 @@ public class GLFWKeyboardImplementation implements KeyboardImplementation {
 
     @Override
     public void createKeyboard() {
+        // FIXME: NEVER DESTROY MOUSE OR KEYBOARD BECAUSE LINUX SEEMS TO BE UNABLE TO FREE CALLBACK POINTERS PROPERLY
+        if(keyCallback != null) {
+            return;
+        }
         this.keyCallback = GLFWKeyCallback.create((window, glfwKey, scancode, action, mods) -> {
             int key = translateKeyFromGLFW(glfwKey);
             if (action == GLFW.GLFW_PRESS) {
@@ -54,8 +61,8 @@ public class GLFWKeyboardImplementation implements KeyboardImplementation {
 
     @Override
     public void destroyKeyboard() {
-        this.keyCallback.free();
-        this.charCallback.free();
+        // this.keyCallback.free();
+        // this.charCallback.free();
     }
 
     @Override

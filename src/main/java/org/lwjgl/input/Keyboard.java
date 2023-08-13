@@ -220,10 +220,10 @@ public class Keyboard {
      * @return STATE_ON if on, STATE_OFF if off and STATE_UNKNOWN if the state is unknown
      */
 /*	public static int isStateKeySet(int key) {
-		if (!created)
-			throw new IllegalStateException("Keyboard must be created before you can query key state");
-		return implementation.isStateKeySet(key);
-	}
+        if (!created)
+            throw new IllegalStateException("Keyboard must be created before you can query key state");
+        return implementation.isStateKeySet(key);
+    }
 */
     /**
      * Gets a key's name
