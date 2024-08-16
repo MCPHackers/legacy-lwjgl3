@@ -20,6 +20,7 @@ public class GLFWMouseImplementation implements MouseImplementation {
     private GLFWCursorEnterCallback cursorEnterCallback;
     private long windowHandle;
     private boolean isInsideWindow;
+	private static final int WHEEL_SCALE = 120;
 
     private final EventQueue event_queue = new EventQueue(Mouse.EVENT_SIZE);
 
@@ -78,8 +79,8 @@ public class GLFWMouseImplementation implements MouseImplementation {
             this.last_y = y;
         });
         this.scrollCallback = GLFWScrollCallback.create((window, xoffset, yoffset) -> {
-            accum_dz += yoffset;
-            putMouseEvent((byte)-1, (byte)0, (int) yoffset, System.nanoTime());
+            accum_dz += yoffset * WHEEL_SCALE;
+            putMouseEvent((byte)-1, (byte)0, (int)(yoffset * WHEEL_SCALE), System.nanoTime());
         });
         this.cursorEnterCallback = GLFWCursorEnterCallback.create((window, entered) -> this.isInsideWindow = entered);
 

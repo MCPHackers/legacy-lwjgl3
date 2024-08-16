@@ -131,19 +131,6 @@ public class Display {
             }
         }
         swapBuffers();
-        if(!isFullscreen()) {
-            // GLFW.glfwGetWindowPos(handle, buffX, buffY);
-            // Display.x = buffX.get();
-            // Display.y = buffY.get();
-            // buffX.flip();
-            // buffY.flip();
-            
-            // GLFW.glfwGetWindowSize(handle, buffX, buffY);
-            // Display.width = buffX.get();
-            // Display.height = buffY.get();
-            // buffX.flip();
-            // buffY.flip();
-        }
     }
     
     public static void swapBuffers() {
@@ -155,15 +142,18 @@ public class Display {
     }
 
     public static void create(PixelFormat pixelFormat) throws LWJGLException {
-        // GLFW.glfwWindowHint(GLFW.GLFW_ACCUM_ALPHA_BITS, pixelFormat.getAccumulationBitsPerPixel());
-        // GLFW.glfwWindowHint(GLFW.GLFW_ALPHA_BITS, pixelFormat.getAlphaBits());
-        // GLFW.glfwWindowHint(GLFW.GLFW_AUX_BUFFERS, pixelFormat.getAuxBuffers());
-        // GLFW.glfwWindowHint(GLFW.GLFW_DEPTH_BITS, pixelFormat.getDepthBits());
-        // GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, pixelFormat.getSamples());
-        // GLFW.glfwWindowHint(GLFW.GLFW_STENCIL_BITS, pixelFormat.getStencilBits());
-        // GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
-        // GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE);
-        handle = GLFW.glfwCreateWindow(current_mode.getWidth(), current_mode.getHeight(), title, MemoryUtil.NULL, MemoryUtil.NULL);
+        GLFW.glfwWindowHint(GLFW.GLFW_ACCUM_ALPHA_BITS, pixelFormat.getAccumulationBitsPerPixel());
+        GLFW.glfwWindowHint(GLFW.GLFW_ALPHA_BITS, pixelFormat.getAlphaBits());
+        GLFW.glfwWindowHint(GLFW.GLFW_AUX_BUFFERS, pixelFormat.getAuxBuffers());
+        GLFW.glfwWindowHint(GLFW.GLFW_DEPTH_BITS, pixelFormat.getDepthBits());
+        GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, pixelFormat.getSamples());
+        GLFW.glfwWindowHint(GLFW.GLFW_STENCIL_BITS, pixelFormat.getStencilBits());
+        GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, Display.resizable ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
+        long monitor = MemoryUtil.NULL;
+        if(current_mode.isFullscreenCapable()) {
+            monitor = GLFW.glfwGetPrimaryMonitor();
+        }
+        handle = GLFW.glfwCreateWindow(current_mode.getWidth(), current_mode.getHeight(), title, monitor, MemoryUtil.NULL);
         if(handle == MemoryUtil.NULL) {
             throw new LWJGLException("Display could not be created");
         }
@@ -205,8 +195,6 @@ public class Display {
     public static void setDisplayModeAndFullscreen(DisplayMode mode) throws LWJGLException {
         setDisplayModeAndFullscreenInternal(mode.isFullscreenCapable(), mode);
     }
-        
-    static final boolean borderlessFullscreen = false;
 
     private static void setDisplayModeAndFullscreenInternal(boolean fullscreen, DisplayMode mode) throws LWJGLException {
         if ( mode == null )
@@ -219,22 +207,15 @@ public class Display {
             if ( !isCreated() )
                 return;
             if(isFullscreen()) {
-                if(borderlessFullscreen) {
-                    GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_DECORATED, 0);
-                    GLFW.glfwSetWindowSize(handle, current_mode.getWidth(), current_mode.getHeight());
-                } else {
-                    long primaryMonitor = GLFW.glfwGetPrimaryMonitor();
-                    GLFW.glfwGetMonitorPos(primaryMonitor, buffX, buffY);
-                    GLFW.glfwSetWindowMonitor(handle, primaryMonitor, buffX.get(), buffY.get(), current_mode.getWidth(), current_mode.getHeight(), current_mode.getFrequency());
-                    buffX.flip();
-                    buffY.flip();
-                }
+                long primaryMonitor = GLFW.glfwGetPrimaryMonitor();
+                GLFW.glfwGetMonitorPos(primaryMonitor, buffX, buffY);
+                GLFW.glfwSetWindowMonitor(handle, primaryMonitor, buffX.get(), buffY.get(), current_mode.getWidth(), current_mode.getHeight(), current_mode.getFrequency());
+                buffX.flip();
+                buffY.flip();
             } else {
                 GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_DECORATED, 1);
                 GLFW.glfwSetWindowMonitor(handle, MemoryUtil.NULL, x, y, current_mode.getWidth(), current_mode.getHeight(), current_mode.getFrequency());
             }
-            width = current_mode.getWidth();
-            height = current_mode.getHeight();
         }
     }
 
@@ -247,16 +228,11 @@ public class Display {
         window_created = true;
 
         if(isFullscreen()) {
-            if(borderlessFullscreen) {
-                GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_DECORATED, 0);
-                GLFW.glfwSetWindowSize(handle, current_mode.getWidth(), current_mode.getHeight());
-            } else {
-                long primaryMonitor = GLFW.glfwGetPrimaryMonitor();
-                GLFW.glfwGetMonitorPos(primaryMonitor, buffX, buffY);
-                GLFW.glfwSetWindowMonitor(handle, primaryMonitor, buffX.get(), buffY.get(), current_mode.getWidth(), current_mode.getHeight(), current_mode.getFrequency());
-                buffX.flip();
-                buffY.flip();
-            }
+            long primaryMonitor = GLFW.glfwGetPrimaryMonitor();
+            GLFW.glfwGetMonitorPos(primaryMonitor, buffX, buffY);
+            GLFW.glfwSetWindowMonitor(handle, primaryMonitor, buffX.get(), buffY.get(), current_mode.getWidth(), current_mode.getHeight(), current_mode.getFrequency());
+            buffX.flip();
+            buffY.flip();
         } else {
             GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_DECORATED, 1);
             GLFW.glfwSetWindowMonitor(handle, MemoryUtil.NULL, x, y, current_mode.getWidth(), current_mode.getHeight(), current_mode.getFrequency());
@@ -333,6 +309,19 @@ public class Display {
     }
 
     private static void destroyWindow() {
+        GLFW.glfwDestroyWindow(handle);
+        if(sizeCallback != null) {
+            sizeCallback.free();
+            sizeCallback = null;
+        }
+        if(moveCallback != null) {
+            moveCallback.free();
+            moveCallback = null;
+        }
+        window_created = false;
+    }
+
+    public static void destroy() {
         if ( !isCreated()) {
             return;
         }
@@ -342,20 +331,13 @@ public class Display {
         if ( Keyboard.isCreated() ) {
             Keyboard.destroy();
         }
-        // Hide the window while maintaining it's context
-        //GLFW.glfwHideWindow(handle);
-        window_created = false;
-    }
-
-    public static void destroy() {
         destroyWindow();
-        sizeCallback.free();
-        moveCallback.free();
         // Terminate GLFW and free the error callback
         GLFW.glfwTerminate();
         GLFWErrorCallback callback = GLFW.glfwSetErrorCallback(null);
         if(callback != null) {
             callback.free();
+            callback = null;
         }
     }
 
