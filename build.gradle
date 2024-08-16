@@ -19,7 +19,7 @@ repositories {
 
 import org.gradle.internal.os.OperatingSystem
 
-project.ext.lwjglVersion = "3.3.2"
+project.ext.lwjglVersion = "3.3.3"
 switch (OperatingSystem.current()) {
     //TODO fetch proper natives based on architecture
     case OperatingSystem.MAC_OS:

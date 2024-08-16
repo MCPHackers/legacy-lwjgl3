@@ -493,7 +493,7 @@ public class Keyboard {
     public static final int KEY_CAPITAL = register("CAPITAL", 58);
     public static final int KEY_SCROLL = register("SCROLL", 70);
     public static final int KEY_NUMLOCK = register("NUMLOCK", 69);
-    public static final int KEY_PRINT_SCREEN = register("PRINT_SCREEN", 28);
+    public static final int KEY_PRINT_SCREEN = register("PRINT_SCREEN", 84);
     public static final int KEY_PAUSE = register("PAUSE", 197);
     public static final int KEY_F1 = register("F1", 59);
     public static final int KEY_F2 = register("F2", 60);

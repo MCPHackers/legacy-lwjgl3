@@ -14,7 +14,7 @@ public final class DisplayMode {
     }
 
     DisplayMode(int width, int height, int bpp, int freq) {
-        this(width, height, bpp, freq, false);
+        this(width, height, bpp, freq, true);
     }
 
     private DisplayMode(int width, int height, int bpp, int freq, boolean fullscreen) {
