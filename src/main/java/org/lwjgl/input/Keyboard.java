@@ -35,9 +35,11 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.glfw.GLFW;
-import com.github.zarzelcow.legacylwjgl3.implementation.LWJGLImplementationUtils;
+
+import com.github.zarzelcow.legacylwjgl3.implementation.glfw.GLFWKeyboardImplementation;
+import com.github.zarzelcow.legacylwjgl3.implementation.input.KeyboardImplementation;
+
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.InputImplementation;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -85,7 +87,7 @@ public class Keyboard {
     /** One time initialization */
     private static boolean initialized;
 
-    private static InputImplementation implementation;
+    private static KeyboardImplementation implementation;
 
     /**
      * Keyboard cannot be constructed.
@@ -109,7 +111,7 @@ public class Keyboard {
      *
      * @throws LWJGLException if the keyboard could not be created for any reason
      */
-    private static void create(InputImplementation impl) throws LWJGLException {
+    private static void create(KeyboardImplementation impl) throws LWJGLException {
         if (created)
             return;
         if (!initialized)
@@ -131,7 +133,7 @@ public class Keyboard {
 //        synchronized (OpenGLPackageAccess.global_lock) {
             if (!Display.isCreated()) throw new IllegalStateException("Display must be created.");
 
-            create(LWJGLImplementationUtils.getOrCreateInputImplementation());
+            create(new GLFWKeyboardImplementation());
 //        }
     }
 

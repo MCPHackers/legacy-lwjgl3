@@ -1,6 +1,5 @@
 package org.lwjgl.opengl;
 
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.security.AccessController;
@@ -16,8 +15,6 @@ import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowPosCallback;
-import org.lwjgl.glfw.GLFWWindowSizeCallback;
-import org.lwjgl.glfw.GLFWFramebufferSizeCallbackI;
 import org.lwjgl.input.Controllers;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -236,6 +233,8 @@ public class Display {
                 GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_DECORATED, 1);
                 GLFW.glfwSetWindowMonitor(handle, MemoryUtil.NULL, x, y, current_mode.getWidth(), current_mode.getHeight(), current_mode.getFrequency());
             }
+            width = current_mode.getWidth();
+            height = current_mode.getHeight();
         }
     }
 

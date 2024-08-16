@@ -27,10 +27,6 @@ public class GLFWKeyboardImplementation implements KeyboardImplementation {
 
     @Override
     public void createKeyboard() {
-        // FIXME: NEVER DESTROY MOUSE OR KEYBOARD BECAUSE LINUX SEEMS TO BE UNABLE TO FREE CALLBACK POINTERS PROPERLY
-        if(keyCallback != null) {
-            return;
-        }
         this.keyCallback = GLFWKeyCallback.create((window, glfwKey, scancode, action, mods) -> {
             int key = translateKeyFromGLFW(glfwKey);
             if (action == GLFW.GLFW_PRESS) {
@@ -61,8 +57,15 @@ public class GLFWKeyboardImplementation implements KeyboardImplementation {
 
     @Override
     public void destroyKeyboard() {
-        // this.keyCallback.free();
-        // this.charCallback.free();
+        if(this.keyCallback != null) {
+            this.keyCallback.free();
+            this.keyCallback = null;
+        }
+        if(this.charCallback != null) {
+            this.charCallback.free();
+            this.charCallback = null;
+        }
+
     }
 
     @Override

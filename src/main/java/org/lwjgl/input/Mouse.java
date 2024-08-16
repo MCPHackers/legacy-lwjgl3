@@ -39,9 +39,10 @@ import java.util.Map;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
-import com.github.zarzelcow.legacylwjgl3.implementation.LWJGLImplementationUtils;
+import com.github.zarzelcow.legacylwjgl3.implementation.glfw.GLFWMouseImplementation;
+import com.github.zarzelcow.legacylwjgl3.implementation.input.MouseImplementation;
+
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.InputImplementation;
 
 
 /**
@@ -75,12 +76,12 @@ public class Mouse {
 
     /** Mouse absolute Y position in pixels */
     private static int				y;
-
-    /** Mouse absolute X position in pixels without any clipping */
-    private static int				absolute_x;
-
-    /** Mouse absolute Y position in pixels without any clipping */
-    private static int				absolute_y;
+	
+	/** Mouse absolute X position in pixels without any clipping */
+	private static int				absolute_x;
+	
+	/** Mouse absolute Y position in pixels without any clipping */
+	private static int				absolute_y;
 
     /** Buffer to hold the deltas dx, dy and dwheel */
     private static IntBuffer	coord_buffer;
@@ -132,22 +133,22 @@ public class Mouse {
     /** The position of the mouse it was grabbed at */
     private static int			grab_x;
     private static int			grab_y;
-    /** The last absolute mouse event position (before clipping) for delta computation */
-    private static int			last_event_raw_x;
-    private static int			last_event_raw_y;
+	/** The last absolute mouse event position (before clipping) for delta computation */
+	private static int			last_event_raw_x;
+	private static int			last_event_raw_y;
 
     /** Buffer size in events */
     private static final int	BUFFER_SIZE									= 50;
 
     private static boolean		isGrabbed;
 
-    private static InputImplementation implementation;
+    private static MouseImplementation implementation;
 
     /** Whether we need cursor animation emulation */
 //    private static final boolean emulateCursorAnimation = 	LWJGLUtil.getPlatform() == LWJGLUtil.PLATFORM_WINDOWS ||
 //            LWJGLUtil.getPlatform() == LWJGLUtil.PLATFORM_MACOSX;
 
-    private static  boolean clipMouseCoordinatesToWindow = !getPrivilegedBoolean("org.lwjgl.input.Mouse.allowNegativeMouseCoords");
+    private static boolean clipMouseCoordinatesToWindow = !getPrivilegedBoolean("org.lwjgl.input.Mouse.allowNegativeMouseCoords");
 
     /**
      * Mouse cannot be constructed.
@@ -250,17 +251,13 @@ public class Mouse {
         readBuffer.position(readBuffer.limit());
     }
 
-    static InputImplementation getImplementation() {
-        return implementation;
-    }
-
     /**
      * "Create" the mouse with the given custom implementation.	This is used
      * reflectively by AWTInputAdapter.
      *
      * @throws LWJGLException if the mouse could not be created for any reason
      */
-    private static void create(InputImplementation impl) throws LWJGLException {
+    private static void create(MouseImplementation impl) throws LWJGLException {
         if (created)
             return;
         if (!initialized)
@@ -273,7 +270,7 @@ public class Mouse {
         // set mouse buttons
         buttonCount = implementation.getButtonCount();
         buttons = BufferUtils.createByteBuffer(buttonCount);
-        coord_buffer = BufferUtils.createIntBuffer(3);
+        coord_buffer = BufferUtils.createIntBuffer(5);
 //        if (currentCursor != null && implementation.getNativeCursorCapabilities() != 0)
 //            setNativeCursor(currentCursor);
         readBuffer = ByteBuffer.allocate(EVENT_SIZE * BUFFER_SIZE);
@@ -292,7 +289,7 @@ public class Mouse {
 //        synchronized (OpenGLPackageAccess.global_lock) {
             if (!Display.isCreated()) throw new IllegalStateException("Display must be created.");
 
-            create(LWJGLImplementationUtils.getOrCreateInputImplementation());
+            create(new GLFWMouseImplementation());
 //        }
     }
 
@@ -345,36 +342,36 @@ public class Mouse {
      */
     public static void poll() {
 //        synchronized (OpenGLPackageAccess.global_lock) {
-            if (!created) throw new IllegalStateException("Mouse must be created before you can poll it");
-            implementation.pollMouse(coord_buffer, buttons);
+			if (!created) throw new IllegalStateException("Mouse must be created before you can poll it");
+			implementation.pollMouse(coord_buffer, buttons);
 
-            /* If we're grabbed, poll returns mouse deltas, if not it returns absolute coordinates */
-            int poll_coord1 = coord_buffer.get(0);
-            int poll_coord2 = coord_buffer.get(1);
-            /* The wheel is always relative */
-            int poll_dwheel = coord_buffer.get(2);
+			/* If we're grabbed, poll returns mouse deltas, if not it returns absolute coordinates */
+			int poll_coord1 = coord_buffer.get(0);
+			int poll_coord2 = coord_buffer.get(1);
+			/* The wheel is always relative */
+			int poll_dwheel = coord_buffer.get(2);
 
-            if (isGrabbed()) {
-                dx += poll_coord1;
-                dy += poll_coord2;
-                x += poll_coord1;
-                y += poll_coord2;
-                absolute_x += poll_coord1;
-                absolute_y += poll_coord2;
-            } else {
-                dx = poll_coord1 - absolute_x;
-                dy = poll_coord2 - absolute_y;
-                absolute_x = x = poll_coord1;
-                absolute_y = y = poll_coord2;
-            }
-
-            if(clipMouseCoordinatesToWindow) {
-                x = Math.min(Display.getWidth() - 1, Math.max(0, x));
-                y = Math.min(Display.getHeight() - 1, Math.max(0, y));
-            }
-
-            dwheel += poll_dwheel;
-            read();
+			if (isGrabbed()) {
+				dx += poll_coord1;
+				dy += poll_coord2;
+				x += poll_coord1;
+				y += poll_coord2;
+				absolute_x += poll_coord1;
+				absolute_y += poll_coord2;
+			} else {
+				dx = poll_coord1 - absolute_x;
+				dy = poll_coord2 - absolute_y;
+				absolute_x = x = poll_coord1;
+				absolute_y = y = poll_coord2;
+			}
+                        
+			if(clipMouseCoordinatesToWindow) {
+				x = Math.min(Display.getWidth() - 1, Math.max(0, x));
+				y = Math.min(Display.getHeight() - 1, Math.max(0, y));
+			}
+			
+			dwheel += poll_dwheel;
+			read();
 //        }
     }
 
@@ -441,31 +438,31 @@ public class Mouse {
 //        synchronized (OpenGLPackageAccess.global_lock) {
             if (!created) throw new IllegalStateException("Mouse must be created before you can read events");
             if (readBuffer.hasRemaining()) {
-                eventButton = readBuffer.get();
-                eventState = readBuffer.get() != 0;
-                if (isGrabbed()) {
-                    event_dx = readBuffer.getInt();
-                    event_dy = readBuffer.getInt();
-                    event_x += event_dx;
-                    event_y += event_dy;
-                    last_event_raw_x = event_x;
-                    last_event_raw_y = event_y;
-                } else {
-                    int new_event_x = readBuffer.getInt();
-                    int new_event_y = readBuffer.getInt();
-                    event_dx = new_event_x - last_event_raw_x;
-                    event_dy = new_event_y - last_event_raw_y;
-                    event_x = new_event_x;
-                    event_y = new_event_y;
-                    last_event_raw_x = new_event_x;
-                    last_event_raw_y = new_event_y;
-                }
-                if(clipMouseCoordinatesToWindow) {
-                    event_x = Math.min(Display.getWidth() - 1, Math.max(0, event_x));
-                    event_y = Math.min(Display.getHeight() - 1, Math.max(0, event_y));
-                }
-                event_dwheel = readBuffer.getInt();
-                event_nanos = readBuffer.getLong();
+				eventButton = readBuffer.get();
+				eventState = readBuffer.get() != 0;
+				if (isGrabbed()) {
+					event_dx = readBuffer.getInt();
+					event_dy = readBuffer.getInt();
+					event_x += event_dx;
+					event_y += event_dy;
+					last_event_raw_x = event_x;
+					last_event_raw_y = event_y;
+				} else {
+					int new_event_x = readBuffer.getInt();
+					int new_event_y = readBuffer.getInt();
+					event_dx = new_event_x - last_event_raw_x;
+					event_dy = new_event_y - last_event_raw_y;
+					event_x = new_event_x;
+					event_y = new_event_y;
+					last_event_raw_x = new_event_x;
+					last_event_raw_y = new_event_y;
+				}
+				if(clipMouseCoordinatesToWindow) {
+					event_x = Math.min(Display.getWidth() - 1, Math.max(0, event_x));
+					event_y = Math.min(Display.getHeight() - 1, Math.max(0, event_y));
+				}
+				event_dwheel = readBuffer.getInt();
+				event_nanos = readBuffer.getLong();
                 return true;
             } else
                 return false;
@@ -647,6 +644,7 @@ public class Mouse {
             boolean grabbed = isGrabbed;
             isGrabbed = grab;
             if (isCreated()) {
+                implementation.grabMouse(grab); // Necessary to run before implementation.setCursorPosition
                 if (grab && !grabbed) {
                     // store location mouse was grabbed
                     grab_x = x;
@@ -658,13 +656,10 @@ public class Mouse {
                         implementation.setCursorPosition(grab_x, grab_y);
                 }
 
-                implementation.grabMouse(grab);
                 // Get latest values from native side
                 poll();
                 event_x = x;
                 event_y = y;
-                last_event_raw_x = x;
-                last_event_raw_y = y;
                 resetMouse();
             }
 //        }
