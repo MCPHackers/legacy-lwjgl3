@@ -1,5 +1,13 @@
 package org.lwjgl.opengl;
 
+import java.awt.Canvas;
+import java.awt.Container;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.security.AccessController;
@@ -9,11 +17,13 @@ import java.util.HashSet;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.LWJGLUtil;
+import org.lwjgl.Sys;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.GLFWWindowCloseCallback;
 import org.lwjgl.glfw.GLFWWindowPosCallback;
 import org.lwjgl.input.Controllers;
 import org.lwjgl.input.Keyboard;
@@ -174,6 +184,36 @@ public class Display {
             Display.y = y;
         }
     }
+
+    public static Canvas parent;
+
+    public static void setParent(Canvas canvas) {
+        if(canvas == parent) {
+            return;
+        }
+        if(parent != null) {
+            Container rootParent = parent.getParent();
+            if(rootParent == null) { // Unexpected
+                return;
+            }
+            while(rootParent.getParent() != null) {
+                rootParent = rootParent.getParent();
+            }
+            rootParent.setVisible(true);
+        }
+        parent = canvas;
+        if(canvas == null) {
+            return;
+        }
+        Container rootParent = parent.getParent();
+        if(rootParent == null) { // Unexpected
+            return;
+        }
+        while(rootParent.getParent() != null) {
+            rootParent = rootParent.getParent();
+        }
+        rootParent.setVisible(false);
+    }
     
     public static void setLocation(int new_x, int new_y) {
         x = new_x;
@@ -305,6 +345,9 @@ public class Display {
             window_resized = true;
             Display.width = width;
             Display.height = height;
+            if(parent != null) {
+                parent.setSize(width, height);
+            }
         }
     }
 
