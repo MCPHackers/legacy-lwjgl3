@@ -60,6 +60,8 @@ public class Display {
 
     private static GLFWWindowPosCallback moveCallback = null;
 
+    private static GLFWWindowCloseCallback closeCallback = null;
+
     private static ByteBuffer[] cached_icons = null;
 
     private static IntBuffer buffX = BufferUtils.createIntBuffer(1);
@@ -169,11 +171,29 @@ public class Display {
         }
         sizeCallback = GLFWFramebufferSizeCallback.create(Display::resizeCallback);
         moveCallback = GLFWWindowPosCallback.create(Display::moveCallback);
+        closeCallback = GLFWWindowCloseCallback.create(Display::closeCallback);
+        GLFW.glfwSetWindowCloseCallback(handle, closeCallback);
         GLFW.glfwSetFramebufferSizeCallback(handle, sizeCallback);
         GLFW.glfwSetWindowPosCallback(handle, moveCallback);
         GLFW.glfwMakeContextCurrent(handle);
         createWindow();
         GL.createCapabilities();
+    }
+
+    public static void closeCallback(long window) {
+        if (window == handle && parent != null) {
+            Container rootParent = parent.getParent();
+            if(rootParent == null) { // Unexpected
+                return;
+            }
+            while(rootParent.getParent() != null) {
+                rootParent = rootParent.getParent();
+            }
+            if(rootParent instanceof Frame) {
+                Frame f = (Frame)rootParent;
+                f.dispose();
+            }
+        }
     }
 
     public static void moveCallback(long window, int x, int y) {
@@ -185,9 +205,13 @@ public class Display {
         }
     }
 
+    public static Drawable getDrawable() {
+        return null;
+    }
+
     public static Canvas parent;
 
-    public static void setParent(Canvas canvas) {
+    public static void setParent(Canvas canvas) throws LWJGLException {
         if(canvas == parent) {
             return;
         }
@@ -205,6 +229,10 @@ public class Display {
         if(canvas == null) {
             return;
         }
+        // System.out.println(width + " " + height);
+        width = canvas.getWidth();
+        height = canvas.getHeight();
+        setDisplayMode(new DisplayMode(width, height));
         Container rootParent = parent.getParent();
         if(rootParent == null) { // Unexpected
             return;
@@ -253,8 +281,11 @@ public class Display {
                 buffX.flip();
                 buffY.flip();
             } else {
-                GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_DECORATED, 1);
+                // For some reason with GLFW_DECORATED size is combined with window decoration size (it also fires 3 resize callbacks)
+                // TODO report upstream?
+                GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_DECORATED, 0);
                 GLFW.glfwSetWindowMonitor(handle, MemoryUtil.NULL, x, y, current_mode.getWidth(), current_mode.getHeight(), current_mode.getFrequency());
+                GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_DECORATED, 1);
             }
         }
     }
@@ -274,7 +305,7 @@ public class Display {
             buffX.flip();
             buffY.flip();
         } else {
-            GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_DECORATED, 1);
+            // GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_DECORATED, 1);
             GLFW.glfwSetWindowMonitor(handle, MemoryUtil.NULL, x, y, current_mode.getWidth(), current_mode.getHeight(), current_mode.getFrequency());
         }
         
@@ -360,6 +391,10 @@ public class Display {
         if(moveCallback != null) {
             moveCallback.free();
             moveCallback = null;
+        }
+        if(closeCallback != null) {
+            closeCallback.free();
+            closeCallback = null;
         }
         window_created = false;
     }
