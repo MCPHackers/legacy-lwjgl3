@@ -90,7 +90,11 @@ public class Sys {
         try {
             Desktop.getDesktop().browse(new URI(url));
             return true;
-        } catch (IOException | URISyntaxException | UnsupportedOperationException e) {
+        } catch (IOException e) {
+            return false;
+        } catch (URISyntaxException e) {
+            return false;
+        } catch (UnsupportedOperationException e) {
             return false;
         }
     }

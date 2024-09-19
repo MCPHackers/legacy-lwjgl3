@@ -46,13 +46,13 @@ public class GLContext {
     public static ContextCapabilities getCapabilities() {
         ContextCapabilities caps = getCapabilitiesImpl();
         if (caps == null) {
-            //throw new RuntimeException("No OpenGL context found in the current thread.");
+            // throw new RuntimeException("No OpenGL context found in the current thread.");
             try {
                 ContextCapabilities created = new ContextCapabilities(false);
                 setCapabilities(created);
                 return created;
             } catch (LWJGLException e) {
-                //e.printStackTrace();
+                // e.printStackTrace();
                 throw new RuntimeException("No OpenGL context found in the current thread and could not create!", e);
             }
         }

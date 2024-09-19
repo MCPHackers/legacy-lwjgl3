@@ -39,10 +39,9 @@ import java.util.Map;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
-import com.github.zarzelcow.legacylwjgl3.implementation.glfw.GLFWMouseImplementation;
-import com.github.zarzelcow.legacylwjgl3.implementation.input.MouseImplementation;
-
 import org.lwjgl.opengl.Display;
+import org.mcphackers.legacylwjgl3.implementation.MouseImplementation;
+import org.mcphackers.legacylwjgl3.implementation.glfw.GLFWMouseImplementation;
 
 
 /**

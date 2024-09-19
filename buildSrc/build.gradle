@@ -1,0 +1,15 @@
+
+apply plugin: 'java'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // No easy way to retrieve asm_version
+    implementation "org.ow2.asm:asm-tree:9.7"
+    implementation "org.ow2.asm:asm:9.7"
+}

@@ -3,11 +3,6 @@ package org.lwjgl.opengl;
 import java.awt.Canvas;
 import java.awt.Container;
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.security.AccessController;
@@ -17,13 +12,13 @@ import java.util.HashSet;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.LWJGLUtil;
-import org.lwjgl.Sys;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowCloseCallback;
+import org.lwjgl.glfw.GLFWWindowFocusCallback;
 import org.lwjgl.glfw.GLFWWindowPosCallback;
 import org.lwjgl.input.Controllers;
 import org.lwjgl.input.Keyboard;
@@ -38,7 +33,7 @@ public class Display {
 
     private static long handle = MemoryUtil.NULL;
 
-    private static boolean resizable = true;
+    private static boolean resizable;
 
     private static DisplayMode current_mode;
 
@@ -52,17 +47,17 @@ public class Display {
 
     private static boolean fullscreen;
 
-    private static boolean window_resized = false;
+    private static boolean window_resized;
     
-    private static boolean window_created = false;
+    private static boolean window_created;
 
-    private static GLFWFramebufferSizeCallback sizeCallback = null;
+    private static GLFWFramebufferSizeCallback sizeCallback;
 
-    private static GLFWWindowPosCallback moveCallback = null;
+    private static GLFWWindowPosCallback moveCallback;
 
-    private static GLFWWindowCloseCallback closeCallback = null;
+    private static GLFWWindowCloseCallback closeCallback;
 
-    private static ByteBuffer[] cached_icons = null;
+    private static ByteBuffer[] cached_icons;
 
     private static IntBuffer buffX = BufferUtils.createIntBuffer(1);
     private static IntBuffer buffY = BufferUtils.createIntBuffer(1);
@@ -175,6 +170,7 @@ public class Display {
         GLFW.glfwSetWindowCloseCallback(handle, closeCallback);
         GLFW.glfwSetFramebufferSizeCallback(handle, sizeCallback);
         GLFW.glfwSetWindowPosCallback(handle, moveCallback);
+        GLFW.glfwSetWindowPosCallback(handle, moveCallback);
         GLFW.glfwMakeContextCurrent(handle);
         createWindow();
         GL.createCapabilities();
@@ -205,12 +201,14 @@ public class Display {
         }
     }
 
+    // DO NOT USE. Stub
     public static Drawable getDrawable() {
         return null;
     }
 
     public static Canvas parent;
 
+    // DO NOT USE. Make sure the game is deAWTed first.
     public static void setParent(Canvas canvas) throws LWJGLException {
         if(canvas == parent) {
             return;
@@ -229,7 +227,6 @@ public class Display {
         if(canvas == null) {
             return;
         }
-        // System.out.println(width + " " + height);
         width = canvas.getWidth();
         height = canvas.getHeight();
         setDisplayMode(new DisplayMode(width, height));
@@ -282,10 +279,11 @@ public class Display {
                 buffY.flip();
             } else {
                 // For some reason with GLFW_DECORATED size is combined with window decoration size (it also fires 3 resize callbacks)
-                // TODO report upstream?
-                GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_DECORATED, 0);
+                // Also, the workaround loses focus and doesn't always work
+                // TODO 
+                // GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_DECORATED, 0);
                 GLFW.glfwSetWindowMonitor(handle, MemoryUtil.NULL, x, y, current_mode.getWidth(), current_mode.getHeight(), current_mode.getFrequency());
-                GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_DECORATED, 1);
+                // GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_DECORATED, 1);
             }
         }
     }
@@ -427,14 +425,18 @@ public class Display {
         return GLFW.glfwWindowShouldClose(handle);
     }
 
-    public static boolean isActive() {
+    public static boolean isVisible() {
         return GLFW.glfwGetWindowAttrib(handle, GLFW.GLFW_ICONIFIED) == 0;
+    }
+
+    public static boolean isActive() {
+        return GLFW.glfwGetWindowAttrib(handle, GLFW.GLFW_FOCUSED) == 1;
     }
 
     public static void setResizable(boolean isResizable) {
         resizable = isResizable;
         if (isCreated()) {
-            GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, resizable ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
+            GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_RESIZABLE, resizable ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
         }
     }
 

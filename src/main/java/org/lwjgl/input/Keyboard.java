@@ -35,11 +35,9 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.glfw.GLFW;
-
-import com.github.zarzelcow.legacylwjgl3.implementation.glfw.GLFWKeyboardImplementation;
-import com.github.zarzelcow.legacylwjgl3.implementation.input.KeyboardImplementation;
-
 import org.lwjgl.opengl.Display;
+import org.mcphackers.legacylwjgl3.implementation.KeyboardImplementation;
+import org.mcphackers.legacylwjgl3.implementation.glfw.GLFWKeyboardImplementation;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -424,7 +422,7 @@ public class Keyboard {
     }
 
     private static final String[] keyNames = new String[KEYBOARD_SIZE];
-    private static final Map<String, Integer> keyMap = new HashMap<>(253);
+    private static final Map<String, Integer> keyMap = new HashMap<String, Integer>(253);
 
     public static final int CHAR_NONE = '\0';
     public static final int KEY_NONE = register("NONE", 0x00);

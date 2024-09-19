@@ -6,11 +6,19 @@ plugins {
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
+def ENV = System.getenv()
+
 archivesBaseName = project.archives_base_name
-version = project.mod_version
+version = project.version
+if(!ENV.RELEASE.equals('1')) {
+    project.version += '-SNAPSHOT'
+}
 group = project.maven_group
 
 repositories {
+    maven {
+        url "https://maven.glass-launcher.net/releases"
+    }
     maven {
         url "https://mcphackers.github.io/libraries/"
     }
@@ -19,7 +27,6 @@ repositories {
 
 import org.gradle.internal.os.OperatingSystem
 
-project.ext.lwjglVersion = "3.3.3"
 switch (OperatingSystem.current()) {
     //TODO fetch proper natives based on architecture
     case OperatingSystem.MAC_OS:
@@ -36,9 +43,11 @@ switch (OperatingSystem.current()) {
 dependencies {
 	implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
-    implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
+    implementation platform("org.lwjgl:lwjgl-bom:$lwjgl_version")
 
     implementation "net.java.jinput:jinput:2.0.9"
+    // lwjgl_util picks up lwjgl 2.9.3 and we don't want that
+    // implementation "org.lwjgl.lwjgl:lwjgl_util:2.9.3"
     implementation "org.lwjgl:lwjgl"
     implementation "org.lwjgl:lwjgl-glfw"
     implementation "org.lwjgl:lwjgl-openal"
@@ -47,7 +56,29 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+
+    testRuntimeOnly('org.junit.platform:junit-platform-launcher:1.5.2')
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.0.0'
+    testImplementation "org.ow2.asm:asm:${project.asm_version}"
+    testImplementation "org.ow2.asm:asm-tree:${project.asm_version}"
 }
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        exceptionFormat = 'full'
+        events = ["passed", "failed", "skipped"]
+        showStandardStreams = true
+    }
+}
+
+task mergeMethods(type: org.mcphackers.legacylwjgl3.MergeLWJGL) {
+    dependsOn compileJava
+
+    classpath = configurations.compileClasspath.resolve()
+    sourceSet = sourceSets.main.output.classesDirs.getFiles()
+}
+classes.finalizedBy mergeMethods
 
 task sourcesJar(type: Jar) {
     archiveClassifier = 'sources'
@@ -65,7 +96,6 @@ publishing {
 	repositories {
 		mavenLocal()
 		
-		def ENV = System.getenv()
 		if (ENV.MAVEN_URL) {
 			maven {
 				url ENV.MAVEN_URL
