@@ -173,6 +173,9 @@ public class GLFWMouseImplementation implements MouseImplementation {
         }
         this.grab = grab;
         GLFW.glfwSetInputMode(this.windowHandle, GLFW.GLFW_CURSOR, grab ? GLFW.GLFW_CURSOR_DISABLED : GLFW.GLFW_CURSOR_NORMAL);
+        if (grab) {
+            this.isInsideWindow = true;
+        }
         this.reset();
     }
 
