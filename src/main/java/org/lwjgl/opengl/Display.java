@@ -303,7 +303,7 @@ public class Display {
                 // Also, the workaround loses focus and doesn't always work
                 // TODO 
                 // GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_DECORATED, 0);
-                GLFW.glfwSetWindowMonitor(handle, MemoryUtil.NULL, x, y, current_mode.getWidth(), current_mode.getHeight(), current_mode.getFrequency());
+                GLFW.glfwSetWindowMonitor(handle, MemoryUtil.NULL, getWindowX(), getWindowY(), current_mode.getWidth(), current_mode.getHeight(), current_mode.getFrequency());
                 GLFW.glfwSetWindowSize(handle, current_mode.getWidth(), current_mode.getHeight());
                 // GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_DECORATED, 1);
             }
