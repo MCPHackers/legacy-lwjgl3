@@ -111,7 +111,7 @@ public interface Controller {
 	 * @param index The index of hte axis for which to set the dead zone
 	 * @param zone The dead zone to use for the specified axis
 	 */
-	void setDeadZone(int index,float zone);
+	void setDeadZone(int index, float zone);
 
 	/**
 	 * Retrieve the number of axes available on this controller.
@@ -270,19 +270,22 @@ public interface Controller {
 	 * @param zone The dead zone to use for the RZ axis
 	 */
 	void setRZAxisDeadZone(float zone);
-	
-	
-	/** Returns the number of rumblers this controller supports */
+
+	/**
+	 * Returns the number of rumblers this controller supports
+	 */
 	int getRumblerCount();
-	
-	/** Returns the name of the specified rumbler
-	 * 
+
+	/**
+	 * Returns the name of the specified rumbler
+	 *
 	 * @param index The rumbler index
 	 */
 	String getRumblerName(int index);
-	
-	/** Sets the vibration strength of the specified rumbler
-	 * 
+
+	/**
+	 * Sets the vibration strength of the specified rumbler
+	 *
 	 * @param index The index of the rumbler
 	 * @param strength The strength to vibrate at
 	 */

@@ -47,87 +47,87 @@ import java.nio.LongBuffer;
 
 public class GL45 {
 
-    public static void glGetTransformFeedback(int xfb, int pname, IntBuffer param) {
-        org.lwjgl.opengl.GL45.glGetTransformFeedbackiv(xfb, pname, param);
-    }
+	public static void glGetTransformFeedback(int xfb, int pname, IntBuffer param) {
+		org.lwjgl.opengl.GL45.glGetTransformFeedbackiv(xfb, pname, param);
+	}
 
-    public static void glGetTransformFeedback(int xfb, int pname, int index, IntBuffer param) {
-        org.lwjgl.opengl.GL45.glGetTransformFeedbacki_v(xfb, pname, index, param);
-    }
+	public static void glGetTransformFeedback(int xfb, int pname, int index, IntBuffer param) {
+		org.lwjgl.opengl.GL45.glGetTransformFeedbacki_v(xfb, pname, index, param);
+	}
 
-    public static void glGetTransformFeedback(int xfb, int pname, int index, LongBuffer param) {
-        org.lwjgl.opengl.GL45.glGetTransformFeedbacki64_v(xfb, pname, index, param);
-    }
+	public static void glGetTransformFeedback(int xfb, int pname, int index, LongBuffer param) {
+		org.lwjgl.opengl.GL45.glGetTransformFeedbacki64_v(xfb, pname, index, param);
+	}
 
-    public static void glGetNamedBufferParameter(int buffer, int pname, IntBuffer params) {
-        org.lwjgl.opengl.GL45.glGetNamedBufferParameteriv(buffer, pname, params);
-    }
+	public static void glGetNamedBufferParameter(int buffer, int pname, IntBuffer params) {
+		org.lwjgl.opengl.GL45.glGetNamedBufferParameteriv(buffer, pname, params);
+	}
 
-    public static void glGetNamedBufferParameter(int buffer, int pname, LongBuffer params) {
-        org.lwjgl.opengl.GL45.glGetNamedBufferParameteri64v(buffer, pname, params);
-    }
+	public static void glGetNamedBufferParameter(int buffer, int pname, LongBuffer params) {
+		org.lwjgl.opengl.GL45.glGetNamedBufferParameteri64v(buffer, pname, params);
+	}
 
-    public static void glClearNamedFramebuffer(int framebuffer, int buffer, int drawbuffer, IntBuffer value) {
-        org.lwjgl.opengl.GL45.glClearNamedFramebufferiv(framebuffer, buffer, drawbuffer, value);
-    }
+	public static void glClearNamedFramebuffer(int framebuffer, int buffer, int drawbuffer, IntBuffer value) {
+		org.lwjgl.opengl.GL45.glClearNamedFramebufferiv(framebuffer, buffer, drawbuffer, value);
+	}
 
-    public static void glClearNamedFramebufferu(int framebuffer, int buffer, int drawbuffer, IntBuffer value) {
-        org.lwjgl.opengl.GL45.glClearNamedFramebufferuiv(framebuffer, buffer, drawbuffer, value);
-    }
+	public static void glClearNamedFramebufferu(int framebuffer, int buffer, int drawbuffer, IntBuffer value) {
+		org.lwjgl.opengl.GL45.glClearNamedFramebufferuiv(framebuffer, buffer, drawbuffer, value);
+	}
 
-    public static void glClearNamedFramebufferu(int framebuffer, int buffer, int drawbuffer, FloatBuffer value) {
-        org.lwjgl.opengl.GL45.glClearNamedFramebufferfv(framebuffer, buffer, drawbuffer, value);
-    }
+	public static void glClearNamedFramebufferu(int framebuffer, int buffer, int drawbuffer, FloatBuffer value) {
+		org.lwjgl.opengl.GL45.glClearNamedFramebufferfv(framebuffer, buffer, drawbuffer, value);
+	}
 
-    public static void glGetNamedFramebufferParameter(int buffer, int pname, IntBuffer param) {
-        org.lwjgl.opengl.GL45.glGetNamedFramebufferParameteriv(buffer, pname, param);
-    }
+	public static void glGetNamedFramebufferParameter(int buffer, int pname, IntBuffer param) {
+		org.lwjgl.opengl.GL45.glGetNamedFramebufferParameteriv(buffer, pname, param);
+	}
 
-    public static int glGetNamedFramebufferParameter(int buffer, int pname) {
-        return org.lwjgl.opengl.GL45.glGetNamedFramebufferParameteri(buffer, pname);
-    }
+	public static int glGetNamedFramebufferParameter(int buffer, int pname) {
+		return org.lwjgl.opengl.GL45.glGetNamedFramebufferParameteri(buffer, pname);
+	}
 
-    public static void glGetNamedFramebufferAttachmentParameter(int buffer, int attachment, int pname, IntBuffer param) {
-        org.lwjgl.opengl.GL45.glGetNamedFramebufferAttachmentParameteriv(buffer, attachment, pname, param);
-    }
+	public static void glGetNamedFramebufferAttachmentParameter(int buffer, int attachment, int pname, IntBuffer param) {
+		org.lwjgl.opengl.GL45.glGetNamedFramebufferAttachmentParameteriv(buffer, attachment, pname, param);
+	}
 
-    public static int glGetNamedFramebufferAttachmentParameter(int buffer, int attachment, int pname) {
-        return org.lwjgl.opengl.GL45.glGetNamedFramebufferAttachmentParameteri(buffer, attachment, pname);
-    }
+	public static int glGetNamedFramebufferAttachmentParameter(int buffer, int attachment, int pname) {
+		return org.lwjgl.opengl.GL45.glGetNamedFramebufferAttachmentParameteri(buffer, attachment, pname);
+	}
 
-    public static void glGetNamedRenderbufferParameter(int buffer, int pname, IntBuffer param) {
-        org.lwjgl.opengl.GL45.glGetNamedRenderbufferParameteriv(buffer, pname, param);
-    }
+	public static void glGetNamedRenderbufferParameter(int buffer, int pname, IntBuffer param) {
+		org.lwjgl.opengl.GL45.glGetNamedRenderbufferParameteriv(buffer, pname, param);
+	}
 
-    public static int glGetNamedRenderbufferParameter(int buffer, int pname) {
-        return org.lwjgl.opengl.GL45.glGetNamedRenderbufferParameteri(buffer, pname);
-    }
+	public static int glGetNamedRenderbufferParameter(int buffer, int pname) {
+		return org.lwjgl.opengl.GL45.glGetNamedRenderbufferParameteri(buffer, pname);
+	}
 
-    public static void glGetnUniform(int program, int location, FloatBuffer params) {
-        org.lwjgl.opengl.GL45.glGetnUniformfv(program, location, params);
-    }
+	public static void glGetnUniform(int program, int location, FloatBuffer params) {
+		org.lwjgl.opengl.GL45.glGetnUniformfv(program, location, params);
+	}
 
-    public static void glGetnUniform(int program, int location, IntBuffer params) {
-        org.lwjgl.opengl.GL45.glGetnUniformiv(program, location, params);
-    }
+	public static void glGetnUniform(int program, int location, IntBuffer params) {
+		org.lwjgl.opengl.GL45.glGetnUniformiv(program, location, params);
+	}
 
-    public static void glGetnUniformu(int program, int location, IntBuffer params) {
-        org.lwjgl.opengl.GL45.glGetnUniformuiv(program, location, params);
-    }
-    
-    public static void glGetVertexArray(int vaobj, int pname, IntBuffer param) {
-        org.lwjgl.opengl.GL45.glGetVertexArrayiv(vaobj, pname, param);
-    }
-    
-    public static int glGetVertexArray(int vaobj, int pname) {
-        return org.lwjgl.opengl.GL45.glGetVertexArrayi(vaobj, pname);
-    }
-    
-    public static void glGetVertexArrayIndexed(int vaobj, int index, int pname, IntBuffer param) {
-        org.lwjgl.opengl.GL45.glGetVertexArrayIndexediv(vaobj, index, pname, param);
-    }
-    
-    public static int glGetVertexArrayIndexed(int vaobj, int index, int pname) {
-        return org.lwjgl.opengl.GL45.glGetVertexArrayIndexedi(vaobj, index, pname);
-    }
+	public static void glGetnUniformu(int program, int location, IntBuffer params) {
+		org.lwjgl.opengl.GL45.glGetnUniformuiv(program, location, params);
+	}
+
+	public static void glGetVertexArray(int vaobj, int pname, IntBuffer param) {
+		org.lwjgl.opengl.GL45.glGetVertexArrayiv(vaobj, pname, param);
+	}
+
+	public static int glGetVertexArray(int vaobj, int pname) {
+		return org.lwjgl.opengl.GL45.glGetVertexArrayi(vaobj, pname);
+	}
+
+	public static void glGetVertexArrayIndexed(int vaobj, int index, int pname, IntBuffer param) {
+		org.lwjgl.opengl.GL45.glGetVertexArrayIndexediv(vaobj, index, pname, param);
+	}
+
+	public static int glGetVertexArrayIndexed(int vaobj, int index, int pname) {
+		return org.lwjgl.opengl.GL45.glGetVertexArrayIndexedi(vaobj, index, pname);
+	}
 }

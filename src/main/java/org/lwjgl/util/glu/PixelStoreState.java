@@ -80,5 +80,4 @@ class PixelStoreState extends Util {
 		glPixelStorei(GL_PACK_SKIP_ROWS, packSkipRows);
 		glPixelStorei(GL_PACK_SKIP_PIXELS, packSkipPixels);
 	}
-
 }

@@ -54,11 +54,17 @@ public final class PixelFormat implements PixelFormatLWJGL {
 	 * This parameter is ignored in Display.create().
 	 */
 	private int bpp;
-	/** The number of alpha bits. */
+	/**
+	 * The number of alpha bits.
+	 */
 	private int alpha;
-	/** The number of depth buffer bits */
+	/**
+	 * The number of depth buffer bits
+	 */
 	private int depth;
-	/** The number of stencil bits */
+	/**
+	 * The number of stencil bits
+	 */
 	private int stencil;
 	/**
 	 * The number of samples to use in anti-aliasing.
@@ -73,15 +79,25 @@ public final class PixelFormat implements PixelFormatLWJGL {
 	 * This property is currently a no-op for the MacOS implementation.
 	 */
 	private int colorSamples;
-	/** The number of auxiliary buffers */
+	/**
+	 * The number of auxiliary buffers
+	 */
 	private int num_aux_buffers;
-	/** The number of bits per pixel in the accumulation buffer */
+	/**
+	 * The number of bits per pixel in the accumulation buffer
+	 */
 	private int accum_bpp;
-	/** The number of alpha bits in the accumulation buffer */
+	/**
+	 * The number of alpha bits in the accumulation buffer
+	 */
 	private int accum_alpha;
-	/** Whether this format requires a stereo buffer */
+	/**
+	 * Whether this format requires a stereo buffer
+	 */
 	private boolean stereo;
-	/** Whether this format specifies a floating point format */
+	/**
+	 * Whether this format specifies a floating point format
+	 */
 	private boolean floating_point;
 	/**
 	 * Whether this format specifies a packed floating point format (32 bit unsigned - R11F_G11F_B10F)
@@ -171,7 +187,7 @@ public final class PixelFormat implements PixelFormatLWJGL {
 	 * @return the new PixelFormat
 	 */
 	public PixelFormat withBitsPerPixel(final int bpp) {
-		if ( bpp < 0 )
+		if (bpp < 0)
 			throw new IllegalArgumentException("Invalid number of bits per pixel specified: " + bpp);
 
 		final PixelFormat pf = new PixelFormat(this);
@@ -191,7 +207,7 @@ public final class PixelFormat implements PixelFormatLWJGL {
 	 * @return the new PixelFormat
 	 */
 	public PixelFormat withAlphaBits(final int alpha) {
-		if ( alpha < 0 )
+		if (alpha < 0)
 			throw new IllegalArgumentException("Invalid number of alpha bits specified: " + alpha);
 
 		final PixelFormat pf = new PixelFormat(this);
@@ -211,7 +227,7 @@ public final class PixelFormat implements PixelFormatLWJGL {
 	 * @return the new PixelFormat
 	 */
 	public PixelFormat withDepthBits(final int depth) {
-		if ( depth < 0 )
+		if (depth < 0)
 			throw new IllegalArgumentException("Invalid number of depth bits specified: " + depth);
 
 		final PixelFormat pf = new PixelFormat(this);
@@ -231,7 +247,7 @@ public final class PixelFormat implements PixelFormatLWJGL {
 	 * @return the new PixelFormat
 	 */
 	public PixelFormat withStencilBits(final int stencil) {
-		if ( stencil < 0 )
+		if (stencil < 0)
 			throw new IllegalArgumentException("Invalid number of stencil bits specified: " + stencil);
 
 		final PixelFormat pf = new PixelFormat(this);
@@ -251,7 +267,7 @@ public final class PixelFormat implements PixelFormatLWJGL {
 	 * @return the new PixelFormat
 	 */
 	public PixelFormat withSamples(final int samples) {
-		if ( samples < 0 )
+		if (samples < 0)
 			throw new IllegalArgumentException("Invalid number of samples specified: " + samples);
 
 		final PixelFormat pf = new PixelFormat(this);
@@ -282,7 +298,7 @@ public final class PixelFormat implements PixelFormatLWJGL {
 	 * @return the new PixelFormat
 	 */
 	public PixelFormat withCoverageSamples(final int colorSamples, final int coverageSamples) {
-		if ( coverageSamples < 0 || colorSamples < 0 || (coverageSamples == 0 && 0 < colorSamples) || coverageSamples < colorSamples  )
+		if (coverageSamples < 0 || colorSamples < 0 || (coverageSamples == 0 && 0 < colorSamples) || coverageSamples < colorSamples)
 			throw new IllegalArgumentException("Invalid number of coverage samples specified: " + coverageSamples + " - " + colorSamples);
 
 		final PixelFormat pf = new PixelFormat(this);
@@ -303,7 +319,7 @@ public final class PixelFormat implements PixelFormatLWJGL {
 	 * @return the new PixelFormat
 	 */
 	public PixelFormat withAuxBuffers(final int num_aux_buffers) {
-		if ( num_aux_buffers < 0 )
+		if (num_aux_buffers < 0)
 			throw new IllegalArgumentException("Invalid number of auxiliary buffers specified: " + num_aux_buffers);
 
 		final PixelFormat pf = new PixelFormat(this);
@@ -323,7 +339,7 @@ public final class PixelFormat implements PixelFormatLWJGL {
 	 * @return the new PixelFormat
 	 */
 	public PixelFormat withAccumulationBitsPerPixel(final int accum_bpp) {
-		if ( accum_bpp < 0 )
+		if (accum_bpp < 0)
 			throw new IllegalArgumentException("Invalid number of bits per pixel in the accumulation buffer specified: " + accum_bpp);
 
 		final PixelFormat pf = new PixelFormat(this);
@@ -343,7 +359,7 @@ public final class PixelFormat implements PixelFormatLWJGL {
 	 * @return the new PixelFormat
 	 */
 	public PixelFormat withAccumulationAlpha(final int accum_alpha) {
-		if ( accum_alpha < 0 )
+		if (accum_alpha < 0)
 			throw new IllegalArgumentException("Invalid number of alpha bits in the accumulation buffer specified: " + accum_alpha);
 
 		final PixelFormat pf = new PixelFormat(this);
@@ -383,7 +399,7 @@ public final class PixelFormat implements PixelFormatLWJGL {
 	public PixelFormat withFloatingPoint(final boolean floating_point) {
 		final PixelFormat pf = new PixelFormat(this);
 		pf.floating_point = floating_point;
-		if ( floating_point )
+		if (floating_point)
 			pf.floating_point_packed = false;
 		return pf;
 	}
@@ -399,7 +415,7 @@ public final class PixelFormat implements PixelFormatLWJGL {
 	public PixelFormat withFloatingPointPacked(final boolean floating_point_packed) {
 		final PixelFormat pf = new PixelFormat(this);
 		pf.floating_point_packed = floating_point_packed;
-		if ( floating_point_packed )
+		if (floating_point_packed)
 			pf.floating_point = false;
 		return pf;
 	}
@@ -420,5 +436,4 @@ public final class PixelFormat implements PixelFormatLWJGL {
 		pf.sRGB = sRGB;
 		return pf;
 	}
-
 }

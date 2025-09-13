@@ -150,8 +150,6 @@ public class Matrix2f extends Matrix implements Serializable {
 		return this;
 	}
 
-
-
 	/**
 	 * Add two matrices together and place the result in a third matrix.
 	 * @param left The left source matrix
@@ -294,11 +292,11 @@ public class Matrix2f extends Matrix implements Serializable {
 		if (determinant != 0) {
 			if (dest == null)
 				dest = new Matrix2f();
-			float determinant_inv = 1f/determinant;
-			float t00 =  src.m11*determinant_inv;
-			float t01 = -src.m01*determinant_inv;
-			float t11 =  src.m00*determinant_inv;
-			float t10 = -src.m10*determinant_inv;
+			float determinant_inv = 1f / determinant;
+			float t00 = src.m11 * determinant_inv;
+			float t01 = -src.m01 * determinant_inv;
+			float t11 = src.m00 * determinant_inv;
+			float t10 = -src.m10 * determinant_inv;
 
 			dest.m00 = t00;
 			dest.m01 = t01;
@@ -395,6 +393,6 @@ public class Matrix2f extends Matrix implements Serializable {
 	 * @see org.lwjgl.vector.Matrix#determinant()
 	 */
 	public float determinant() {
-		return m00 * m11 - m01*m10;
+		return m00 * m11 - m01 * m10;
 	}
 }

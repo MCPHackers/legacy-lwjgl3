@@ -43,17 +43,27 @@ import org.lwjgl.LWJGLException;
  * @author Kevin Glass
  */
 public class Controllers {
-	/** The controllers available */
+	/**
+	 * The controllers available
+	 */
 	private static ArrayList<JInputController> controllers = new ArrayList<JInputController>();
-	/** The number of controllers */
+	/**
+	 * The number of controllers
+	 */
 	private static int controllerCount;
 
-	/** The current list of events */
+	/**
+	 * The current list of events
+	 */
 	private static ArrayList<ControllerEvent> events = new ArrayList<ControllerEvent>();
-	/** The current event */
+	/**
+	 * The current event
+	 */
 	private static ControllerEvent event;
 
-	/** Whether controllers were created */
+	/**
+	 * Whether controllers were created
+	 */
 	private static boolean created;
 
 	/**
@@ -70,20 +80,20 @@ public class Controllers {
 
 			net.java.games.input.Controller[] found = env.getControllers();
 			ArrayList<net.java.games.input.Controller> lollers = new ArrayList<net.java.games.input.Controller>();
-			for ( net.java.games.input.Controller c : found ) {
-				if ( (!c.getType().equals(net.java.games.input.Controller.Type.KEYBOARD)) &&
-				     (!c.getType().equals(net.java.games.input.Controller.Type.MOUSE)) ) {
+			for (net.java.games.input.Controller c : found) {
+				if ((!c.getType().equals(net.java.games.input.Controller.Type.KEYBOARD)) &&
+					(!c.getType().equals(net.java.games.input.Controller.Type.MOUSE))) {
 					lollers.add(c);
 				}
 			}
 
-			for ( net.java.games.input.Controller c : lollers ) {
+			for (net.java.games.input.Controller c : lollers) {
 				createController(c);
 			}
 
 			created = true;
 		} catch (Throwable e) {
-			throw new LWJGLException("Failed to initialise controllers",e);
+			throw new LWJGLException("Failed to initialise controllers", e);
 		}
 	}
 
@@ -95,12 +105,12 @@ public class Controllers {
 	private static void createController(net.java.games.input.Controller c) {
 		net.java.games.input.Controller[] subControllers = c.getControllers();
 		if (subControllers.length == 0) {
-			JInputController controller = new JInputController(controllerCount,c);
+			JInputController controller = new JInputController(controllerCount, c);
 
 			controllers.add(controller);
 			controllerCount++;
 		} else {
-			for ( net.java.games.input.Controller sub : subControllers ) {
+			for (net.java.games.input.Controller sub : subControllers) {
 				createController(sub);
 			}
 		}
@@ -130,7 +140,7 @@ public class Controllers {
 	 * and generate events that must be cleared.
 	 */
 	public static void poll() {
-		for (int i=0;i<controllers.size();i++) {
+		for (int i = 0; i < controllers.size(); i++) {
 			getController(i).poll();
 		}
 	}
@@ -169,22 +179,22 @@ public class Controllers {
 	 * Destroys any resources used by the controllers
 	 */
 	public static void destroy() {
-// 		FIXME! not currently possible to destroy a controller
+		// 		FIXME! not currently possible to destroy a controller
 
-//		if (!created)
-//			return;
-//		created = false;
-//
-//		// nuke each controller
-//		for (int i=0;i<controllers.size();i++) {
-//			//
-//		}
-//
-//		// cleanup
-//		event = null;
-//		events.clear();
-//		controllers.clear();
-//		controllerCount = 0;
+		//		if (!created)
+		//			return;
+		//		created = false;
+		//
+		//		// nuke each controller
+		//		for (int i=0;i<controllers.size();i++) {
+		//			//
+		//		}
+		//
+		//		// cleanup
+		//		event = null;
+		//		events.clear();
+		//		controllers.clear();
+		//		controllerCount = 0;
 	}
 
 	/**
@@ -270,7 +280,7 @@ public class Controllers {
 
 	/**
 	 * Gets the state of the button that generated the current event
-	 *  
+	 *
 	 * @return True if button was down, or false if released
 	 */
 	public static boolean getEventButtonState() {
@@ -278,8 +288,8 @@ public class Controllers {
 	}
 
 	/**
-	 * Get the value on an X axis of the current event 
-	 *  
+	 * Get the value on an X axis of the current event
+	 *
 	 * @return The value on a x axis of the current event
 	 */
 	public static float getEventXAxisValue() {
@@ -287,8 +297,8 @@ public class Controllers {
 	}
 
 	/**
-	 * Get the value on an Y axis of the current event 
-	 *  
+	 * Get the value on an Y axis of the current event
+	 *
 	 * @return The value on a y axis of the current event
 	 */
 	public static float getEventYAxisValue() {

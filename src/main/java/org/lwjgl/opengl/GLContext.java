@@ -41,34 +41,34 @@ import org.lwjgl.LWJGLException;
  * LWJGL3
  */
 public class GLContext {
-    private static final ThreadLocal<ContextCapabilities> current_capabilities = new ThreadLocal<>();
+	private static final ThreadLocal<ContextCapabilities> current_capabilities = new ThreadLocal<>();
 
-    public static ContextCapabilities getCapabilities() {
-        ContextCapabilities caps = getCapabilitiesImpl();
-        if (caps == null) {
-            // throw new RuntimeException("No OpenGL context found in the current thread.");
-            try {
-                ContextCapabilities created = new ContextCapabilities(false);
-                setCapabilities(created);
-                return created;
-            } catch (LWJGLException e) {
-                // e.printStackTrace();
-                throw new RuntimeException("No OpenGL context found in the current thread and could not create!", e);
-            }
-        }
+	public static ContextCapabilities getCapabilities() {
+		ContextCapabilities caps = getCapabilitiesImpl();
+		if (caps == null) {
+			// throw new RuntimeException("No OpenGL context found in the current thread.");
+			try {
+				ContextCapabilities created = new ContextCapabilities(false);
+				setCapabilities(created);
+				return created;
+			} catch (LWJGLException e) {
+				// e.printStackTrace();
+				throw new RuntimeException("No OpenGL context found in the current thread and could not create!", e);
+			}
+		}
 
-        return caps;
-    }
+		return caps;
+	}
 
-    private static @Nullable ContextCapabilities getCapabilitiesImpl() {
-        return getThreadLocalCapabilities();
-    }
+	private static @Nullable ContextCapabilities getCapabilitiesImpl() {
+		return getThreadLocalCapabilities();
+	}
 
-    private static @Nullable ContextCapabilities getThreadLocalCapabilities() {
-        return current_capabilities.get();
-    }
+	private static @Nullable ContextCapabilities getThreadLocalCapabilities() {
+		return current_capabilities.get();
+	}
 
-    static void setCapabilities(ContextCapabilities capabilities) {
-        current_capabilities.set(capabilities);
-    }
+	static void setCapabilities(ContextCapabilities capabilities) {
+		current_capabilities.set(capabilities);
+	}
 }

@@ -13,6 +13,7 @@ version = project.version
 if(!ENV.RELEASE.equals('1')) {
     project.version += '-SNAPSHOT'
 }
+project.version += "-lwjgl$lwjgl_version"
 group = project.maven_group
 
 repositories {
@@ -52,10 +53,13 @@ dependencies {
     implementation "org.lwjgl:lwjgl-glfw"
     implementation "org.lwjgl:lwjgl-openal"
     implementation "org.lwjgl:lwjgl-opengl"
+    implementation "org.lwjgl:lwjgl-opengles"
     runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+
+	runtimeOnly files('/media/Stuff/Stuff/MC/mappings/1.14client_remapped.jar')
 
     testRuntimeOnly('org.junit.platform:junit-platform-launcher:1.5.2')
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.0.0'

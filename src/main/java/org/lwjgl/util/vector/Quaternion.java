@@ -160,7 +160,7 @@ public class Quaternion extends Vector implements ReadableVector4f {
 	 * @return The normalised quaternion
 	 */
 	public static Quaternion normalise(Quaternion src, Quaternion dest) {
-		float inv_l = 1f/src.length();
+		float inv_l = 1f / src.length();
 
 		if (dest == null)
 			dest = new Quaternion();
@@ -192,8 +192,7 @@ public class Quaternion extends Vector implements ReadableVector4f {
 	 * @return left dot right
 	 */
 	public static float dot(Quaternion left, Quaternion right) {
-		return left.x * right.x + left.y * right.y + left.z * right.z + left.w
-				* right.w;
+		return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
 	}
 
 	/**
@@ -367,15 +366,11 @@ public class Quaternion extends Vector implements ReadableVector4f {
 	 *            the second quaternion
 	 */
 	public static Quaternion mul(Quaternion left, Quaternion right,
-			Quaternion dest) {
+								 Quaternion dest) {
 		if (dest == null)
 			dest = new Quaternion();
-		dest.set(left.x * right.w + left.w * right.x + left.y * right.z
-				- left.z * right.y, left.y * right.w + left.w * right.y
-				+ left.z * right.x - left.x * right.z, left.z * right.w
-				+ left.w * right.z + left.x * right.y - left.y * right.x,
-				left.w * right.w - left.x * right.x - left.y * right.y
-				- left.z * right.z);
+		dest.set(left.x * right.w + left.w * right.x + left.y * right.z - left.z * right.y, left.y * right.w + left.w * right.y + left.z * right.x - left.x * right.z, left.z * right.w + left.w * right.z + left.x * right.y - left.y * right.x,
+				 left.w * right.w - left.x * right.x - left.y * right.y - left.z * right.z);
 		return dest;
 	}
 
@@ -391,7 +386,7 @@ public class Quaternion extends Vector implements ReadableVector4f {
 	 *            the right quaternion
 	 */
 	public static Quaternion mulInverse(Quaternion left, Quaternion right,
-			Quaternion dest) {
+										Quaternion dest) {
 		float n = right.lengthSquared();
 		// zero-div may occur.
 		n = (n == 0.0 ? n : 1 / n);
@@ -399,15 +394,7 @@ public class Quaternion extends Vector implements ReadableVector4f {
 		if (dest == null)
 			dest = new Quaternion();
 		dest
-			.set((left.x * right.w - left.w * right.x - left.y
-						* right.z + left.z * right.y)
-					* n, (left.y * right.w - left.w * right.y - left.z
-						* right.x + left.x * right.z)
-					* n, (left.z * right.w - left.w * right.z - left.x
-						* right.y + left.y * right.x)
-					* n, (left.w * right.w + left.x * right.x + left.y
-						* right.y + left.z * right.z)
-					* n);
+			.set((left.x * right.w - left.w * right.x - left.y * right.z + left.z * right.y) * n, (left.y * right.w - left.w * right.y - left.z * right.x + left.x * right.z) * n, (left.z * right.w - left.w * right.z - left.x * right.y + left.y * right.x) * n, (left.w * right.w + left.x * right.x + left.y * right.y + left.z * right.z) * n);
 
 		return dest;
 	}
@@ -423,13 +410,13 @@ public class Quaternion extends Vector implements ReadableVector4f {
 		x = a1.x;
 		y = a1.y;
 		z = a1.z;
-		float n = (float) Math.sqrt(x * x + y * y + z * z);
+		float n = (float)Math.sqrt(x * x + y * y + z * z);
 		// zero-div may occur.
-		float s = (float) (Math.sin(0.5 * a1.w) / n);
+		float s = (float)(Math.sin(0.5 * a1.w) / n);
 		x *= s;
 		y *= s;
 		z *= s;
-		w = (float) Math.cos(0.5 * a1.w);
+		w = (float)Math.cos(0.5 * a1.w);
 	}
 
 	/**
@@ -456,7 +443,7 @@ public class Quaternion extends Vector implements ReadableVector4f {
 	 */
 	public static Quaternion setFromMatrix(Matrix4f m, Quaternion q) {
 		return q.setFromMat(m.m00, m.m01, m.m02, m.m10, m.m11, m.m12, m.m20,
-				m.m21, m.m22);
+							m.m21, m.m22);
 	}
 
 	/**
@@ -482,19 +469,19 @@ public class Quaternion extends Vector implements ReadableVector4f {
 	 */
 	public static Quaternion setFromMatrix(Matrix3f m, Quaternion q) {
 		return q.setFromMat(m.m00, m.m01, m.m02, m.m10, m.m11, m.m12, m.m20,
-				m.m21, m.m22);
+							m.m21, m.m22);
 	}
 
 	/**
 	 * Private method to perform the matrix-to-quaternion conversion
 	 */
 	private Quaternion setFromMat(float m00, float m01, float m02, float m10,
-			float m11, float m12, float m20, float m21, float m22) {
+								  float m11, float m12, float m20, float m21, float m22) {
 
 		float s;
 		float tr = m00 + m11 + m22;
 		if (tr >= 0.0) {
-			s = (float) Math.sqrt(tr + 1.0);
+			s = (float)Math.sqrt(tr + 1.0);
 			w = s * 0.5f;
 			s = 0.5f / s;
 			x = (m21 - m12) * s;
@@ -503,21 +490,21 @@ public class Quaternion extends Vector implements ReadableVector4f {
 		} else {
 			float max = Math.max(Math.max(m00, m11), m22);
 			if (max == m00) {
-				s = (float) Math.sqrt(m00 - (m11 + m22) + 1.0);
+				s = (float)Math.sqrt(m00 - (m11 + m22) + 1.0);
 				x = s * 0.5f;
 				s = 0.5f / s;
 				y = (m01 + m10) * s;
 				z = (m20 + m02) * s;
 				w = (m21 - m12) * s;
 			} else if (max == m11) {
-				s = (float) Math.sqrt(m11 - (m22 + m00) + 1.0);
+				s = (float)Math.sqrt(m11 - (m22 + m00) + 1.0);
 				y = s * 0.5f;
 				s = 0.5f / s;
 				z = (m12 + m21) * s;
 				x = (m01 + m10) * s;
 				w = (m02 - m20) * s;
 			} else {
-				s = (float) Math.sqrt(m22 - (m00 + m11) + 1.0);
+				s = (float)Math.sqrt(m22 - (m00 + m11) + 1.0);
 				z = s * 0.5f;
 				s = 0.5f / s;
 				x = (m20 + m02) * s;

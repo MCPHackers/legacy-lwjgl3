@@ -80,38 +80,38 @@ public class GL20 {
 	}
 
 	public static void glUniformMatrix2(int location, boolean transpose, FloatBuffer value) {
-        org.lwjgl.opengl.GL20.glUniformMatrix2fv(location, transpose, value);
-    }
+		org.lwjgl.opengl.GL20.glUniformMatrix2fv(location, transpose, value);
+	}
 
 	public static void glUniformMatrix3(int location, boolean transpose, FloatBuffer value) {
-        org.lwjgl.opengl.GL20.glUniformMatrix3fv(location, transpose, value);
-    }
+		org.lwjgl.opengl.GL20.glUniformMatrix3fv(location, transpose, value);
+	}
 
 	public static void glUniformMatrix4(int location, boolean transpose, FloatBuffer value) {
-        org.lwjgl.opengl.GL20.glUniformMatrix4fv(location, transpose, value);
-    }
+		org.lwjgl.opengl.GL20.glUniformMatrix4fv(location, transpose, value);
+	}
 
 	public static void glGetShader(int shader, int pname, IntBuffer params) {
 		org.lwjgl.opengl.GL20.glGetShaderiv(shader, pname, params);
-    }
+	}
 
 	public static int glGetShader(int shader, int pname) {
 		return org.lwjgl.opengl.GL20.glGetShaderi(shader, pname);
-    }
+	}
 
 	public static void glGetProgram(int shader, int pname, IntBuffer params) {
 		org.lwjgl.opengl.GL20.glGetProgramiv(shader, pname, params);
-    }
+	}
 
 	public static int glGetProgram(int shader, int pname) {
 		return org.lwjgl.opengl.GL20.glGetProgrami(shader, pname);
-    }
+	}
 
 	public static void glGetUniform(int program, int location, FloatBuffer params) {
 		org.lwjgl.opengl.GL20.glGetUniformfv(program, location, params);
-    }
+	}
 
 	public static void glGetUniform(int program, int location, IntBuffer params) {
 		org.lwjgl.opengl.GL20.glGetUniformiv(program, location, params);
-    }
+	}
 }

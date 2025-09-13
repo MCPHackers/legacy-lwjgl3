@@ -37,32 +37,58 @@ package org.lwjgl.input;
  * @author Kevin Glass
  */
 class ControllerEvent {
-	/** Indicates the event was caused by a button */
+	/**
+	 * Indicates the event was caused by a button
+	 */
 	public static final int BUTTON = 1;
-	/** Indicates the event was caused by a axis */
+	/**
+	 * Indicates the event was caused by a axis
+	 */
 	public static final int AXIS = 2;
-	/** Indicates the event was caused by a pov X */
+	/**
+	 * Indicates the event was caused by a pov X
+	 */
 	public static final int POVX = 3;
-	/** Indicates the event was caused by a pov Y */
+	/**
+	 * Indicates the event was caused by a pov Y
+	 */
 	public static final int POVY = 4;
 
-	/** The controller generating the event */
+	/**
+	 * The controller generating the event
+	 */
 	private Controller source;
-	/** The index of the input (axis or button) that generated the event */
+	/**
+	 * The index of the input (axis or button) that generated the event
+	 */
 	private int index;
-	/** Type of control that generated the event */
+	/**
+	 * Type of control that generated the event
+	 */
 	private int type;
-	/** True when a button is pressed, if this event was caused by the button */
+	/**
+	 * True when a button is pressed, if this event was caused by the button
+	 */
 	private boolean buttonState;
-	/** True if this event was caused by the x axis */
+	/**
+	 * True if this event was caused by the x axis
+	 */
 	private boolean xaxis;
-	/** True if this event was caused by the y axis */
+	/**
+	 * True if this event was caused by the y axis
+	 */
 	private boolean yaxis;
-	/** The time stamp of this event */
+	/**
+	 * The time stamp of this event
+	 */
 	private long timeStamp;
-	/** The value on a specified axis, if this event was caused by the x-axis */
+	/**
+	 * The value on a specified axis, if this event was caused by the x-axis
+	 */
 	private float xaxisValue;
-	/** The value on a specified axis, if this event was caused by the y-axis */
+	/**
+	 * The value on a specified axis, if this event was caused by the y-axis
+	 */
 	private float yaxisValue;
 
 	/**
@@ -75,7 +101,7 @@ class ControllerEvent {
 	 * @param xaxis True if this event was caused by the x-axis
 	 * @param yaxis True if this event was caused by the y-axis
 	 */
-	ControllerEvent(Controller source,long timeStamp, int type,int index,boolean xaxis,boolean yaxis) {
+	ControllerEvent(Controller source, long timeStamp, int type, int index, boolean xaxis, boolean yaxis) {
 		this(source, timeStamp, type, index, false, xaxis, yaxis, 0, 0);
 	}
 
@@ -92,7 +118,7 @@ class ControllerEvent {
 	 * @param xaxisValue The value on a specified axis, if this event was caused by the x-axis
 	 * @param yaxisValue The value on a specified axis, if this event was caused by the y-axis
 	 */
-	ControllerEvent(Controller source,long timeStamp, int type,int index,boolean buttonState,boolean xaxis,boolean yaxis,float xaxisValue,float yaxisValue) {
+	ControllerEvent(Controller source, long timeStamp, int type, int index, boolean buttonState, boolean xaxis, boolean yaxis, float xaxisValue, float yaxisValue) {
 		this.source = source;
 		this.timeStamp = timeStamp;
 		this.type = type;
@@ -143,7 +169,7 @@ class ControllerEvent {
 
 	/**
 	 * Check the button is pressed or not, when this event was caused
-	 *  
+	 *
 	 * @return True when a button is pressed, if this event was caused by the button
 	 */
 	public boolean getButtonState() {
@@ -194,10 +220,10 @@ class ControllerEvent {
 	public boolean isYAxis() {
 		return yaxis;
 	}
-	
+
 	/**
 	 * Get the value on an X axis when this event was caused
-	 *  
+	 *
 	 * @return The value on a specified axis, if this event was caused by the x-axis
 	 */
 	public float getXAxisValue() {
@@ -206,7 +232,7 @@ class ControllerEvent {
 
 	/**
 	 * Get the value on an Y axis when this event was caused
-	 *  
+	 *
 	 * @return The value on a specified axis, if this event was caused by the y-axis
 	 */
 	public float getYAxisValue() {
@@ -217,6 +243,6 @@ class ControllerEvent {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "["+source+" type="+type+" xaxis="+xaxis+" yaxis="+yaxis+"]";
+		return "[" + source + " type=" + type + " xaxis=" + xaxis + " yaxis=" + yaxis + "]";
 	}
 }

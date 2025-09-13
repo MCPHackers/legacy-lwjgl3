@@ -316,7 +316,7 @@ public class Matrix3f extends Matrix implements Serializable {
 	 */
 	public static Matrix3f transpose(Matrix3f src, Matrix3f dest) {
 		if (dest == null)
-		   dest = new Matrix3f();
+			dest = new Matrix3f();
 		float m00 = src.m00;
 		float m01 = src.m10;
 		float m02 = src.m20;
@@ -344,9 +344,7 @@ public class Matrix3f extends Matrix implements Serializable {
 	 */
 	public float determinant() {
 		float f =
-			m00 * (m11 * m22 - m12 * m21)
-				+ m01 * (m12 * m20 - m10 * m22)
-				+ m02 * (m10 * m21 - m11 * m20);
+			m00 * (m11 * m22 - m12 * m21) + m01 * (m12 * m20 - m10 * m22) + m02 * (m10 * m21 - m11 * m20);
 		return f;
 	}
 
@@ -381,41 +379,40 @@ public class Matrix3f extends Matrix implements Serializable {
 		if (determinant != 0) {
 			if (dest == null)
 				dest = new Matrix3f();
-			 /* do it the ordinary way
-			  *
-			  * inv(A) = 1/det(A) * adj(T), where adj(T) = transpose(Conjugate Matrix)
-			  *
-			  * m00 m01 m02
-			  * m10 m11 m12
-			  * m20 m21 m22
-			  */
-			 float determinant_inv = 1f/determinant;
+			/* do it the ordinary way
+			 *
+			 * inv(A) = 1/det(A) * adj(T), where adj(T) = transpose(Conjugate Matrix)
+			 *
+			 * m00 m01 m02
+			 * m10 m11 m12
+			 * m20 m21 m22
+			 */
+			float determinant_inv = 1f / determinant;
 
-			 // get the conjugate matrix
-			 float t00 = src.m11 * src.m22 - src.m12* src.m21;
-			 float t01 = - src.m10 * src.m22 + src.m12 * src.m20;
-			 float t02 = src.m10 * src.m21 - src.m11 * src.m20;
-			 float t10 = - src.m01 * src.m22 + src.m02 * src.m21;
-			 float t11 = src.m00 * src.m22 - src.m02 * src.m20;
-			 float t12 = - src.m00 * src.m21 + src.m01 * src.m20;
-			 float t20 = src.m01 * src.m12 - src.m02 * src.m11;
-			 float t21 = -src.m00 * src.m12 + src.m02 * src.m10;
-			 float t22 = src.m00 * src.m11 - src.m01 * src.m10;
+			// get the conjugate matrix
+			float t00 = src.m11 * src.m22 - src.m12 * src.m21;
+			float t01 = -src.m10 * src.m22 + src.m12 * src.m20;
+			float t02 = src.m10 * src.m21 - src.m11 * src.m20;
+			float t10 = -src.m01 * src.m22 + src.m02 * src.m21;
+			float t11 = src.m00 * src.m22 - src.m02 * src.m20;
+			float t12 = -src.m00 * src.m21 + src.m01 * src.m20;
+			float t20 = src.m01 * src.m12 - src.m02 * src.m11;
+			float t21 = -src.m00 * src.m12 + src.m02 * src.m10;
+			float t22 = src.m00 * src.m11 - src.m01 * src.m10;
 
-			 dest.m00 = t00*determinant_inv;
-			 dest.m11 = t11*determinant_inv;
-			 dest.m22 = t22*determinant_inv;
-			 dest.m01 = t10*determinant_inv;
-			 dest.m10 = t01*determinant_inv;
-			 dest.m20 = t02*determinant_inv;
-			 dest.m02 = t20*determinant_inv;
-			 dest.m12 = t21*determinant_inv;
-			 dest.m21 = t12*determinant_inv;
-			 return dest;
+			dest.m00 = t00 * determinant_inv;
+			dest.m11 = t11 * determinant_inv;
+			dest.m22 = t22 * determinant_inv;
+			dest.m01 = t10 * determinant_inv;
+			dest.m10 = t01 * determinant_inv;
+			dest.m20 = t02 * determinant_inv;
+			dest.m02 = t20 * determinant_inv;
+			dest.m12 = t21 * determinant_inv;
+			dest.m21 = t12 * determinant_inv;
+			return dest;
 		} else
-			 return null;
+			return null;
 	}
-
 
 	/**
 	 * Negate this matrix

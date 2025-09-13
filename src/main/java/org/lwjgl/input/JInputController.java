@@ -47,39 +47,73 @@ import net.java.games.input.Rumbler;
  * @author Kevin Glass
  */
 class JInputController implements Controller {
-	/** The JInput controller this class is wrapping */
+	/**
+	 * The JInput controller this class is wrapping
+	 */
 	private net.java.games.input.Controller target;
-	/** The index that has been assigned to this controller */
+	/**
+	 * The index that has been assigned to this controller
+	 */
 	private int index;
-	/** The Buttons that have been detected on the JInput controller */
+	/**
+	 * The Buttons that have been detected on the JInput controller
+	 */
 	private ArrayList<Component> buttons = new ArrayList<Component>();
-	/** The Axes that have been detected on the JInput controller */
+	/**
+	 * The Axes that have been detected on the JInput controller
+	 */
 	private ArrayList<Component> axes = new ArrayList<Component>();
-	/** The POVs that have been detected on the JInput controller */
+	/**
+	 * The POVs that have been detected on the JInput controller
+	 */
 	private ArrayList<Component> pov = new ArrayList<Component>();
-	/** The rumblers exposed by the controller */
+	/**
+	 * The rumblers exposed by the controller
+	 */
 	private Rumbler[] rumblers;
-	/** The state of the buttons last check */
+	/**
+	 * The state of the buttons last check
+	 */
 	private boolean[] buttonState;
-	/** The values that were read from the pov last check */
+	/**
+	 * The values that were read from the pov last check
+	 */
 	private float[] povValues;
-	/** The values that were read from the axes last check */
+	/**
+	 * The values that were read from the axes last check
+	 */
 	private float[] axesValue;
-	/** The maximum values read for each axis */
+	/**
+	 * The maximum values read for each axis
+	 */
 	private float[] axesMax;
-	/** The dead zones for each axis */
+	/**
+	 * The dead zones for each axis
+	 */
 	private float[] deadZones;
-	/** The index of the X axis or -1 if no X axis is defined */
+	/**
+	 * The index of the X axis or -1 if no X axis is defined
+	 */
 	private int xaxis = -1;
-	/** The index of the Y axis or -1 if no Y axis is defined */
+	/**
+	 * The index of the Y axis or -1 if no Y axis is defined
+	 */
 	private int yaxis = -1;
-	/** The index of the X axis or -1 if no Z axis is defined */
+	/**
+	 * The index of the X axis or -1 if no Z axis is defined
+	 */
 	private int zaxis = -1;
-	/** The index of the RX axis or -1 if no RX axis is defined */
+	/**
+	 * The index of the RX axis or -1 if no RX axis is defined
+	 */
 	private int rxaxis = -1;
-	/** The index of the RY axis or -1 if no RY axis is defined */
+	/**
+	 * The index of the RY axis or -1 if no RY axis is defined
+	 */
 	private int ryaxis = -1;
-	/** The index of the RZ axis or -1 if no RZ axis is defined */
+	/**
+	 * The index of the RZ axis or -1 if no RZ axis is defined
+	 */
 	private int rzaxis = -1;
 
 	/**
@@ -95,10 +129,10 @@ class JInputController implements Controller {
 
 		Component[] sourceAxes = target.getComponents();
 
-		for ( Component sourceAxis : sourceAxes ) {
-			if ( sourceAxis.getIdentifier() instanceof Button ) {
+		for (Component sourceAxis : sourceAxes) {
+			if (sourceAxis.getIdentifier() instanceof Button) {
 				buttons.add(sourceAxis);
-			} else if ( sourceAxis.getIdentifier().equals(Axis.POV) ) {
+			} else if (sourceAxis.getIdentifier().equals(Axis.POV)) {
 				pov.add(sourceAxis);
 			} else {
 				axes.add(sourceAxis);
@@ -112,31 +146,31 @@ class JInputController implements Controller {
 		int axesCount = 0;
 
 		// initialise the state
-		for ( Component sourceAxis : sourceAxes ) {
-			if ( sourceAxis.getIdentifier() instanceof Button ) {
+		for (Component sourceAxis : sourceAxes) {
+			if (sourceAxis.getIdentifier() instanceof Button) {
 				buttonState[buttonsCount] = sourceAxis.getPollData() != 0;
 				buttonsCount++;
-			} else if ( sourceAxis.getIdentifier().equals(Axis.POV) ) {
+			} else if (sourceAxis.getIdentifier().equals(Axis.POV)) {
 				// no account for POV yet
 				// pov.add(sourceAxes[i]);
 			} else {
 				axesValue[axesCount] = sourceAxis.getPollData();
-				if ( sourceAxis.getIdentifier().equals(Axis.X) ) {
+				if (sourceAxis.getIdentifier().equals(Axis.X)) {
 					xaxis = axesCount;
 				}
-				if ( sourceAxis.getIdentifier().equals(Axis.Y) ) {
+				if (sourceAxis.getIdentifier().equals(Axis.Y)) {
 					yaxis = axesCount;
 				}
-				if ( sourceAxis.getIdentifier().equals(Axis.Z) ) {
+				if (sourceAxis.getIdentifier().equals(Axis.Z)) {
 					zaxis = axesCount;
 				}
-				if ( sourceAxis.getIdentifier().equals(Axis.RX) ) {
+				if (sourceAxis.getIdentifier().equals(Axis.RX)) {
 					rxaxis = axesCount;
 				}
-				if ( sourceAxis.getIdentifier().equals(Axis.RY) ) {
+				if (sourceAxis.getIdentifier().equals(Axis.RY)) {
 					ryaxis = axesCount;
 				}
-				if ( sourceAxis.getIdentifier().equals(Axis.RZ) ) {
+				if (sourceAxis.getIdentifier().equals(Axis.RZ)) {
 					rzaxis = axesCount;
 				}
 
@@ -147,11 +181,11 @@ class JInputController implements Controller {
 		axesMax = new float[axes.size()];
 		deadZones = new float[axes.size()];
 
-		for (int i=0;i<axesMax.length;i++) {
+		for (int i = 0; i < axesMax.length; i++) {
 			axesMax[i] = 1.0f;
 			deadZones[i] = 0.05f;
 		}
-		
+
 		rumblers = target.getRumblers();
 	}
 
@@ -208,8 +242,8 @@ class JInputController implements Controller {
 				buttonState[buttonIndex] = event.getValue() != 0;
 
 				// fire button pressed event
-				Controllers.addEvent(new ControllerEvent(this,event.getNanos(),ControllerEvent.BUTTON,buttonIndex,
-														 buttonState[buttonIndex],false,false,0,0));
+				Controllers.addEvent(new ControllerEvent(this, event.getNanos(), ControllerEvent.BUTTON, buttonIndex,
+														 buttonState[buttonIndex], false, false, 0, 0));
 			}
 
 			// handle pov events
@@ -221,10 +255,10 @@ class JInputController implements Controller {
 				povValues[povIndex] = event.getValue();
 
 				if (prevX != getPovX()) {
-					Controllers.addEvent(new ControllerEvent(this,event.getNanos(),ControllerEvent.POVX,0,false,false));
+					Controllers.addEvent(new ControllerEvent(this, event.getNanos(), ControllerEvent.POVX, 0, false, false));
 				}
 				if (prevY != getPovY()) {
-					Controllers.addEvent(new ControllerEvent(this,event.getNanos(),ControllerEvent.POVY,0,false,false));
+					Controllers.addEvent(new ControllerEvent(this, event.getNanos(), ControllerEvent.POVY, 0, false, false));
 				}
 			}
 
@@ -258,8 +292,8 @@ class JInputController implements Controller {
 				}
 
 				// fire event
-				Controllers.addEvent(new ControllerEvent(this,event.getNanos(),ControllerEvent.AXIS,axisIndex,false,
-														 axisIndex == xaxis,axisIndex == yaxis,xaxisValue,yaxisValue));
+				Controllers.addEvent(new ControllerEvent(this, event.getNanos(), ControllerEvent.AXIS, axisIndex, false,
+														 axisIndex == xaxis, axisIndex == yaxis, xaxisValue, yaxisValue));
 				axesValue[axisIndex] = value;
 			}
 		}
@@ -334,14 +368,14 @@ class JInputController implements Controller {
 	 * @see org.lwjgl.input.Controller#setXAxisDeadZone(float)
 	 */
 	public void setXAxisDeadZone(float zone) {
-		setDeadZone(xaxis,zone);
+		setDeadZone(xaxis, zone);
 	}
 
 	/*
 	 * @see org.lwjgl.input.Controller#setYAxisDeadZone(float)
 	 */
 	public void setYAxisDeadZone(float zone) {
-		setDeadZone(yaxis,zone);
+		setDeadZone(yaxis, zone);
 	}
 
 	/*
@@ -384,7 +418,7 @@ class JInputController implements Controller {
 	 * @see org.lwjgl.input.Controller#setZAxisDeadZone(float)
 	 */
 	public void setZAxisDeadZone(float zone) {
-		setDeadZone(zaxis,zone);
+		setDeadZone(zaxis, zone);
 	}
 
 	/*
@@ -413,7 +447,7 @@ class JInputController implements Controller {
 	 * @see org.lwjgl.input.Controller#setRXAxisDeadZone(float)
 	 */
 	public void setRXAxisDeadZone(float zone) {
-		setDeadZone(rxaxis,zone);
+		setDeadZone(rxaxis, zone);
 	}
 
 	/*
@@ -442,7 +476,7 @@ class JInputController implements Controller {
 	 * @see org.lwjgl.input.Controller#setRYAxisDeadZone(float)
 	 */
 	public void setRYAxisDeadZone(float zone) {
-		setDeadZone(ryaxis,zone);
+		setDeadZone(ryaxis, zone);
 	}
 
 	/*
@@ -471,7 +505,7 @@ class JInputController implements Controller {
 	 * @see org.lwjgl.input.Controller#setRZAxisDeadZone(float)
 	 */
 	public void setRZAxisDeadZone(float zone) {
-		setDeadZone(rzaxis,zone);
+		setDeadZone(rzaxis, zone);
 	}
 
 	/*
@@ -485,13 +519,13 @@ class JInputController implements Controller {
 		float value = povValues[0];
 
 		if ((value == Component.POV.DOWN_LEFT) ||
-		    (value == Component.POV.UP_LEFT) ||
-		    (value == Component.POV.LEFT)) {
+			(value == Component.POV.UP_LEFT) ||
+			(value == Component.POV.LEFT)) {
 			return -1;
 		}
 		if ((value == Component.POV.DOWN_RIGHT) ||
-		    (value == Component.POV.UP_RIGHT) ||
-		    (value == Component.POV.RIGHT)) {
+			(value == Component.POV.UP_RIGHT) ||
+			(value == Component.POV.RIGHT)) {
 			return 1;
 		}
 
@@ -509,13 +543,13 @@ class JInputController implements Controller {
 		float value = povValues[0];
 
 		if ((value == Component.POV.DOWN_LEFT) ||
-		    (value == Component.POV.DOWN_RIGHT) ||
-		    (value == Component.POV.DOWN)) {
+			(value == Component.POV.DOWN_RIGHT) ||
+			(value == Component.POV.DOWN)) {
 			return 1;
 		}
 		if ((value == Component.POV.UP_LEFT) ||
-		    (value == Component.POV.UP_RIGHT) ||
-		    (value == Component.POV.UP)) {
+			(value == Component.POV.UP_RIGHT) ||
+			(value == Component.POV.UP)) {
 			return -1;
 		}
 
@@ -525,13 +559,12 @@ class JInputController implements Controller {
 	public int getRumblerCount() {
 		return rumblers.length;
 	}
-	
+
 	public String getRumblerName(int index) {
 		return rumblers[index].getAxisName();
 	}
-	
+
 	public void setRumblerStrength(int index, float strength) {
 		rumblers[index].rumble(strength);
 	}
-
 }
