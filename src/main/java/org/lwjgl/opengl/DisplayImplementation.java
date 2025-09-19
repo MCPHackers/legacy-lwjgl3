@@ -40,14 +40,12 @@ package org.lwjgl.opengl;
 
 import java.awt.Canvas;
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 
 import org.lwjgl.LWJGLException;
 
-interface DisplayImplementation extends InputImplementation {
+interface DisplayImplementation extends InputImplementation, Context {
 
-	void createWindow(DrawableLWJGL drawable, DisplayMode mode, Canvas parent, int x, int y) throws LWJGLException;
+	void createWindow(DisplayMode mode, Canvas parent, int x, int y) throws LWJGLException;
 
 	void destroyWindow();
 
@@ -58,33 +56,6 @@ interface DisplayImplementation extends InputImplementation {
 	 * Fails silently.
 	 */
 	void resetDisplayMode();
-
-	/**
-	 * Return the length of the gamma ramp arrays. Returns 0 if gamma settings are
-	 * unsupported.
-	 *
-	 * @return the length of each gamma ramp array, or 0 if gamma settings are unsupported.
-	 */
-	int getGammaRampLength();
-
-	/**
-	 * Method to set the gamma ramp.
-	 */
-	void setGammaRamp(FloatBuffer gammaRamp) throws LWJGLException;
-
-	/**
-	 * Get the driver adapter string. This is a unique string describing the actual card's hardware, eg. "Geforce2", "PS2",
-	 * "Radeon9700". If the adapter cannot be determined, this function returns null.
-	 * @return a String
-	 */
-	String getAdapter();
-
-	/**
-	 * Get the driver version. This is a vendor/adapter specific version string. If the version cannot be determined,
-	 * this function returns null.
-	 * @return a String
-	 */
-	String getVersion();
 
 	/**
 	 * Initialize and return the current display mode.

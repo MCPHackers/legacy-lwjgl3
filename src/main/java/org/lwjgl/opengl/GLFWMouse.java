@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.glfw.*;
+import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Mouse;
 
 public class GLFWMouse {
@@ -163,6 +164,6 @@ public class GLFWMouse {
 	}
 
 	public int getNativeCursorCapabilities() {
-		return 0;
+		return Cursor.CURSOR_ONE_BIT_TRANSPARENCY | Cursor.CURSOR_8_BIT_ALPHA | Cursor.CURSOR_ANIMATION;
 	}
 }

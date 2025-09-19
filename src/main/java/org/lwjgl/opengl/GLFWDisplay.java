@@ -6,16 +6,12 @@ import java.awt.Canvas;
 import java.awt.Container;
 import java.awt.Frame;
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
-import org.lwjgl.LWJGLUtil;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
@@ -64,8 +60,6 @@ public class GLFWDisplay implements DisplayImplementation {
 
 	private GLFWWindowCloseCallback closeCallback;
 
-	private ByteBuffer[] cached_icons;
-
 	private IntBuffer buffX = BufferUtils.createIntBuffer(1);
 	private IntBuffer buffY = BufferUtils.createIntBuffer(1);
 
@@ -73,7 +67,7 @@ public class GLFWDisplay implements DisplayImplementation {
 	GLFWKeyboard keyboard;
 
 	static {
-		GLFWErrorCallback.createPrint(System.err).set();
+		// GLFWErrorCallback.createPrint(System.err).set();
 		if (!GLFW.glfwInit()) {
 			new ExceptionInInitializerError("Unable to initialize GLFW");
 		}
@@ -132,14 +126,6 @@ public class GLFWDisplay implements DisplayImplementation {
 	}
 
 	private Canvas parent;
-
-	static boolean getPrivilegedBoolean(final String property_name) {
-		return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-			public Boolean run() {
-				return Boolean.getBoolean(property_name);
-			}
-		});
-	}
 
 	private void refreshSizes() {
 		GLFW.glfwPollEvents();
@@ -232,12 +218,12 @@ public class GLFWDisplay implements DisplayImplementation {
 
 	@Override
 	public boolean hasWheel() {
-		return true;
+		return mouse.hasWheel();
 	}
 
 	@Override
 	public int getButtonCount() {
-		return GLFW.GLFW_MOUSE_BUTTON_LAST + 1;
+		return mouse.getButtonCount();
 	}
 
 	@Override
@@ -327,7 +313,7 @@ public class GLFWDisplay implements DisplayImplementation {
 	}
 
 	@Override
-	public void createWindow(DrawableLWJGL drawable, DisplayMode mode, Canvas parent, int x, int y) throws LWJGLException {
+	public void createWindow(DisplayMode mode, Canvas parent, int x, int y) throws LWJGLException {
 		GLFW.glfwDefaultWindowHints();
 		// Configure GLFW
         // GLFW.glfwWindowHint(GLFW.GLFW_ACCUM_ALPHA_BITS, pixelFormat.getAccumulationBitsPerPixel());
@@ -336,17 +322,22 @@ public class GLFWDisplay implements DisplayImplementation {
         // GLFW.glfwWindowHint(GLFW.GLFW_DEPTH_BITS, pixelFormat.getDepthBits());
         // GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, pixelFormat.getSamples());
         // GLFW.glfwWindowHint(GLFW.GLFW_STENCIL_BITS, pixelFormat.getStencilBits());
+		// GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3);
+		// GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 2);
+		// GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
 		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, resizable ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
 		long monitor = MemoryUtil.NULL;
 		if (mode.isFullscreenCapable()) {
 			monitor = GLFW.glfwGetPrimaryMonitor();
 		}
-		handle = GLFW.glfwCreateWindow(mode.getWidth(), mode.getHeight(), title != null ? title : "", monitor, MemoryUtil.NULL);
+		if(!window_created) {
+			handle = GLFW.glfwCreateWindow(mode.getWidth(), mode.getHeight(), title != null ? title : "", monitor, MemoryUtil.NULL);
+		} else {
+			throw new LWJGLException("Display is already created");
+		}
 		if (handle == MemoryUtil.NULL) {
 			throw new LWJGLException("Display could not be created");
 		}
-		current_mode = mode;
-		this.parent = parent;
 		frameBufferSizeCallback = GLFWFramebufferSizeCallback.create(this::frameBufferResizeCallback);
 		sizeCallback = GLFWWindowSizeCallback.create(this::resizeCallback);
 		moveCallback = GLFWWindowPosCallback.create(this::moveCallback);
@@ -355,36 +346,12 @@ public class GLFWDisplay implements DisplayImplementation {
 		GLFW.glfwSetWindowSizeCallback(handle, sizeCallback);
 		GLFW.glfwSetFramebufferSizeCallback(handle, frameBufferSizeCallback);
 		GLFW.glfwSetWindowPosCallback(handle, moveCallback);
-		GLFW.glfwMakeContextCurrent(handle);
+		this.parent = parent;
+		switchDisplayMode(mode);
 		window_created = true;
 
-		// setDisplayModeAndFullscreenInternal(isFullscreen(), current_mode);
-		if (isFullscreen()) {
-			long primaryMonitor = GLFW.glfwGetPrimaryMonitor();
-			GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_DECORATED, 0);
-			GLFW.glfwGetMonitorPos(primaryMonitor, buffX, buffY);
-			GLFW.glfwSetWindowMonitor(handle, primaryMonitor, buffX.get(), buffY.get(), current_mode.getWidth(), current_mode.getHeight(), current_mode.getFrequency());
-			buffX.flip();
-			buffY.flip();
-		} else {
-			// For some reason with GLFW_DECORATED size is combined with window decoration size (it also fires 3 resize callbacks)
-			// Also, the workaround loses focus and doesn't always work
-			// TODO
-			GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_DECORATED, 0);
-			GLFW.glfwSetWindowMonitor(handle, MemoryUtil.NULL, x, y, current_mode.getWidth(), current_mode.getHeight(), current_mode.getFrequency());
-			GLFW.glfwSetWindowSize(handle, current_mode.getWidth(), current_mode.getHeight());
-			GLFW.glfwSetWindowAttrib(handle, GLFW.GLFW_DECORATED, 1);
-		}
-
 		GLFW.glfwSetWindowPos(handle, getWindowX(), getWindowY());
-		refreshSizes();
 
-		// set cached window icon if exists
-		if (cached_icons != null) {
-			setIcon(cached_icons);
-		} else {
-			setIcon(new ByteBuffer[] { LWJGLUtil.LWJGLIcon32x32, LWJGLUtil.LWJGLIcon16x16 });
-		}
 		GLFW.glfwShowWindow(handle);
 		GLFW.glfwFocusWindow(handle);
 	}
@@ -409,32 +376,27 @@ public class GLFWDisplay implements DisplayImplementation {
 	}
 
 	@Override
-	public void switchDisplayMode(DisplayMode mode) throws LWJGLException {
-		System.out.printf("Called switchDisplayMode %s\n", mode.toString());
+	public void switchDisplayMode(DisplayMode mode) {
+		current_mode = mode;
+		if(handle == MemoryUtil.NULL) {
+			return;
+		}
+		if (mode.isFullscreenCapable()) {
+			long primaryMonitor = GLFW.glfwGetPrimaryMonitor();
+			GLFW.glfwGetMonitorPos(primaryMonitor, buffX, buffY);
+			GLFW.glfwSetWindowMonitor(handle, primaryMonitor, buffX.get(), buffY.get(), current_mode.getWidth(), current_mode.getHeight(), current_mode.getFrequency());
+			buffX.flip();
+			buffY.flip();
+		} else {
+			GLFW.glfwSetWindowMonitor(handle, MemoryUtil.NULL, getWindowX(), getWindowY(), current_mode.getWidth(), current_mode.getHeight(), current_mode.getFrequency());
+			reshape(getWindowX(), getWindowY(), current_mode.getWidth(), current_mode.getHeight());
+		}
+		refreshSizes();
 	}
 
 	@Override
 	public void resetDisplayMode() {
-		System.out.println("Called resetDisplayMode");
-	}
-
-	@Override
-	public int getGammaRampLength() {
-		return 0;
-	}
-
-	@Override
-	public void setGammaRamp(FloatBuffer gammaRamp) throws LWJGLException {
-	}
-
-	@Override
-	public String getAdapter() {
-		return null;
-	}
-
-	@Override
-	public String getVersion() {
-		return null;
+		switchDisplayMode(current_mode);
 	}
 
 	@Override
@@ -475,7 +437,6 @@ public class GLFWDisplay implements DisplayImplementation {
 
 	@Override
 	public void reshape(int x, int y, int width, int height) {
-		//TODO figure out which of these values should be scaled
 		glfwSetWindowPos(handle, x, y);
 		glfwSetWindowSize(handle, width, height);
 	}
@@ -498,20 +459,9 @@ public class GLFWDisplay implements DisplayImplementation {
 	}
 	@Override
 	public int setIcon(ByteBuffer[] icons) {
-		if (cached_icons != icons) {
-			cached_icons = new ByteBuffer[icons.length];
-			for (int i = 0; i < icons.length; i++) {
-				cached_icons[i] = BufferUtils.createByteBuffer(icons[i].capacity());
-				int old_position = icons[i].position();
-				cached_icons[i].put(icons[i]);
-				icons[i].position(old_position);
-				cached_icons[i].flip();
-			}
-		}
-
 		if (window_created) {
-			GLFW.glfwSetWindowIcon(handle, iconsToGLFWBuffer(cached_icons));
-			return 1;
+			GLFW.glfwSetWindowIcon(handle, iconsToGLFWBuffer(icons));
+			return icons.length;
 		} else {
 			return 0;
 		}
@@ -538,5 +488,36 @@ public class GLFWDisplay implements DisplayImplementation {
 	@Override
 	public float getPixelScaleFactor() {
 		return getWidth() / getWindowWidth();
+	}
+
+	@Override
+	public boolean isCurrent() throws LWJGLException {
+		return GLFW.glfwGetCurrentContext() == handle;
+	}
+
+	@Override
+	public void makeCurrent() throws LWJGLException {
+		GLFW.glfwMakeContextCurrent(handle);
+        GL.createCapabilities();
+	}
+
+	@Override
+	public void releaseCurrent() throws LWJGLException {
+		GLFW.glfwMakeContextCurrent(0);
+        GL.setCapabilities(null);
+	}
+
+	@Override
+	public void releaseDrawable() throws LWJGLException {
+	}
+
+	@Override
+	public void setSwapInterval(int i) {
+		GLFW.glfwSwapInterval(i);
+	}
+
+	@Override
+	public void swapBuffers() throws LWJGLException {
+		GLFW.glfwSwapBuffers(handle);
 	}
 }

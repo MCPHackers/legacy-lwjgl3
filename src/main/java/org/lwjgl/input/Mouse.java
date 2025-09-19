@@ -649,6 +649,7 @@ public class Mouse {
 			boolean grabbed = isGrabbed;
 			isGrabbed = grab;
 			if (isCreated()) {
+				implementation.grabMouse(grab);
 				if (grab && !grabbed) {
 					// store location mouse was grabbed
 					grab_x = x;
@@ -660,7 +661,6 @@ public class Mouse {
 						implementation.setCursorPosition(grab_x, grab_y);
 				}
 
-				implementation.grabMouse(grab);
 				// Get latest values from native side
 				poll();
 				event_x = x;

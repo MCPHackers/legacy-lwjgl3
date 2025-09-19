@@ -26,7 +26,7 @@ public class GLFWKeyboard {
 	}
 
 	public void createKeyboard() {
-		this.charCallback = GLFWCharCallback.create(new GLFWCharCallbackI() {
+		this.charCallback = GLFWCharCallback.create(new GLFWCharCallback() {
 			public void invoke(long window, int codepoint) {
 				// If we haven't processed last character, put it into event queue.
 				if (tmp_char != 0) {
@@ -36,7 +36,7 @@ public class GLFWKeyboard {
 			}
 		});
 
-		this.keyCallback = GLFWKeyCallback.create(new GLFWKeyCallbackI() {
+		this.keyCallback = GLFWKeyCallback.create(new GLFWKeyCallback() {
 			public void invoke(long window, int glfwKey, int scancode, int action, int mods) {
 				int key = translateKeyFromGLFW(glfwKey);
 				if (action == GLFW.GLFW_PRESS) {
