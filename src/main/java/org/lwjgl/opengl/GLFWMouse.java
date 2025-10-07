@@ -13,7 +13,7 @@ public class GLFWMouse {
 	private GLFWScrollCallbackI scrollCallback;
 	private GLFWCursorEnterCallbackI cursorEnterCallback;
 	private GLFWDisplay display;
-	private boolean isInsideWindow;
+	private boolean isInsideWindow = true;
 	private static final int WHEEL_SCALE = 120;
 
 	private final EventQueue event_queue = new EventQueue(Mouse.EVENT_SIZE);
