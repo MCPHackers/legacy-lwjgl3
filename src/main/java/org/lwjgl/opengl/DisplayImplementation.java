@@ -168,4 +168,6 @@ interface DisplayImplementation extends InputImplementation, Context {
 	 * @return this method will return the pixel scale factor of the Display window useful for high resolution modes.
 	 */
 	float getPixelScaleFactor();
+
+	long getHandle();
 }

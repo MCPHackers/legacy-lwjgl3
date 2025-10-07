@@ -273,6 +273,13 @@ public final class Display {
 		return !isFullscreen() && parent != null ? new DisplayMode(parent.getWidth(), parent.getHeight()) : current_mode;
 	}
 
+	/**
+	 * Used by some mods which were previously made for Cleanroom
+	 */
+	public static long getWindow() {
+		return display_impl.getHandle();
+	}
+
 	private static int getWindowX() {
 		if (!isFullscreen() && parent == null) {
 			// if no display location set, center window

@@ -59,8 +59,6 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
 
-	runtimeOnly files('/media/Stuff/Stuff/MC/mappings/1.14client_remapped.jar')
-
     testRuntimeOnly('org.junit.platform:junit-platform-launcher:1.5.2')
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.0.0'
     testImplementation "org.ow2.asm:asm:${project.asm_version}"
