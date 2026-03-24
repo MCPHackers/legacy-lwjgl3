@@ -311,7 +311,6 @@ public final class Display {
 	 * A native context must exist, and it will be attached to the window.
 	 */
 	private static void createWindow() throws LWJGLException {
-		System.out.println("createWindow");
 		if (window_created) {
 			return;
 		}
@@ -694,7 +693,6 @@ public final class Display {
 	 * @throws LWJGLException If the context could not be made current
 	 */
 	public static void makeCurrent() throws LWJGLException {
-		System.out.println("makeCurrent");
 		display_impl.makeCurrent();
 	}
 

@@ -13,7 +13,6 @@ import java.util.List;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -23,6 +22,7 @@ import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.system.MemoryUtil;
 
 public class GLFWDisplay implements DisplayImplementation {
+	private static final String WM_CLASS_NAME = System.getProperty("legacylwjgl3.wmClass");
 
 	private static final DisplayMode desktop_mode;
 
@@ -34,13 +34,13 @@ public class GLFWDisplay implements DisplayImplementation {
 
 	private boolean resizable;
 
-	private int width = 0;
+	private int width;
 
-	private int height = 0;
+	private int height;
 
-	private int frameBufferWidth = 0;
+	private int frameBufferWidth;
 
-	private int frameBufferHeight = 0;
+	private int frameBufferHeight;
 
 	private int x = -1;
 
@@ -132,18 +132,18 @@ public class GLFWDisplay implements DisplayImplementation {
 		int[] w = new int[1];
 		int[] h = new int[1];
 		GLFW.glfwGetFramebufferSize(handle, w, h);
-		frameBufferWidth = w[0];
-		frameBufferHeight = h[0];
+		frameBufferWidth = Math.max(w[0], 1);
+		frameBufferHeight = Math.max(h[0], 1);
 		GLFW.glfwGetWindowSize(handle, w, h);
-		width = w[0];
-		height = h[0];
+		width = Math.max(w[0], 1);
+		height = Math.max(h[0], 1);
 	}
 
 	private void frameBufferResizeCallback(long window, int width, int height) {
 		if (window == handle) {
 			window_resized = true;
-			this.frameBufferWidth = width;
-			this.frameBufferHeight = height;
+			this.frameBufferWidth = Math.max(width, 1);
+			this.frameBufferHeight = Math.max(height, 1);
 			if (parent != null) {
 				parent.setSize(width, height);
 			}
@@ -153,10 +153,10 @@ public class GLFWDisplay implements DisplayImplementation {
 	private void resizeCallback(long window, int width, int height) {
 		if (window == handle) {
 			window_resized = true;
-			this.width = width;
-			this.height = height;
+			this.width = Math.max(width, 1);
+			this.height = Math.max(height, 1);
 			if (parent != null) {
-				parent.setSize(width, height);
+				parent.setSize(this.width, this.height);
 			}
 		}
 	}
@@ -262,8 +262,12 @@ public class GLFWDisplay implements DisplayImplementation {
 	}
 
 	@Override
-	public void setNativeCursor(Object handle) throws LWJGLException {
-		// mouse.setNativeCursor(handle);
+	public void setNativeCursor(Object cursorHandle) throws LWJGLException {
+		if(cursorHandle == null) {
+			GLFW.glfwSetCursor(this.handle, MemoryUtil.NULL);
+			return;
+		}
+		GLFW.glfwSetCursor(this.handle, (Long)(cursorHandle));
 	}
 
 	@Override
@@ -298,9 +302,32 @@ public class GLFWDisplay implements DisplayImplementation {
 		keyboard.readKeyboard(buffer);
 	}
 
+	private static ByteBuffer convertARGBtoRGBA(IntBuffer imageBuffer, int limit) {
+		// TODO: Does this need to be direct buffer?
+		ByteBuffer buffer = BufferUtils.createByteBuffer(imageBuffer.limit() * 4);
+		for (int i = 0; i < limit; i++) {
+			int argbColor = imageBuffer.get(i);
+
+			byte alpha = (byte)(argbColor >>> 24);
+	        byte red = (byte)(argbColor >>> 16);
+	        byte green = (byte)(argbColor >>> 8);
+	        byte blue = (byte)argbColor;
+
+	        int rgbaColor = ((red & 0xff) << 24 ) + ((green & 0xff) << 16 ) + ((blue & 0xff) << 8)  + ((alpha & 0xff) );
+
+	        buffer.putInt(i*4, rgbaColor);
+		}
+		return buffer;
+	}
+
 	@Override
 	public Object createCursor(int width, int height, int xHotspot, int yHotspot, int numImages, IntBuffer images, IntBuffer delays) throws LWJGLException {
-		return null;
+		if(numImages == 0) {
+			return null;
+		}
+		GLFWImage glfwImage = GLFWImage.malloc();
+		glfwImage.set(width, height, convertARGBtoRGBA(images, width * height));
+		return GLFW.glfwCreateCursor(glfwImage, xHotspot, height-yHotspot-1);
 	}
 
 	@Override
@@ -315,6 +342,9 @@ public class GLFWDisplay implements DisplayImplementation {
 	@Override
 	public void createWindow(DisplayMode mode, Canvas parent, int x, int y) throws LWJGLException {
 		GLFW.glfwDefaultWindowHints();
+		GLFW.glfwWindowHintString(GLFW.GLFW_WAYLAND_APP_ID, WM_CLASS_NAME);
+		GLFW.glfwWindowHintString(GLFW.GLFW_X11_CLASS_NAME, WM_CLASS_NAME);
+		GLFW.glfwWindowHintString(GLFW.GLFW_X11_INSTANCE_NAME, WM_CLASS_NAME);
 		// Configure GLFW
         // GLFW.glfwWindowHint(GLFW.GLFW_ACCUM_ALPHA_BITS, pixelFormat.getAccumulationBitsPerPixel());
         // GLFW.glfwWindowHint(GLFW.GLFW_ALPHA_BITS, pixelFormat.getAlphaBits());
