@@ -48,7 +48,7 @@ public class GLFWDisplay implements DisplayImplementation {
 
 	private boolean fullscreen;
 
-	private boolean window_resized;
+	private boolean window_resized = true;
 
 	private boolean window_created;
 
@@ -342,9 +342,11 @@ public class GLFWDisplay implements DisplayImplementation {
 	@Override
 	public void createWindow(DisplayMode mode, Canvas parent, int x, int y) throws LWJGLException {
 		GLFW.glfwDefaultWindowHints();
-		GLFW.glfwWindowHintString(GLFW.GLFW_WAYLAND_APP_ID, WM_CLASS_NAME);
-		GLFW.glfwWindowHintString(GLFW.GLFW_X11_CLASS_NAME, WM_CLASS_NAME);
-		GLFW.glfwWindowHintString(GLFW.GLFW_X11_INSTANCE_NAME, WM_CLASS_NAME);
+		if(WM_CLASS_NAME != null) {
+			GLFW.glfwWindowHintString(GLFW.GLFW_WAYLAND_APP_ID, WM_CLASS_NAME);
+			GLFW.glfwWindowHintString(GLFW.GLFW_X11_CLASS_NAME, WM_CLASS_NAME);
+			GLFW.glfwWindowHintString(GLFW.GLFW_X11_INSTANCE_NAME, WM_CLASS_NAME);
+		}
 		// Configure GLFW
         // GLFW.glfwWindowHint(GLFW.GLFW_ACCUM_ALPHA_BITS, pixelFormat.getAccumulationBitsPerPixel());
         // GLFW.glfwWindowHint(GLFW.GLFW_ALPHA_BITS, pixelFormat.getAlphaBits());

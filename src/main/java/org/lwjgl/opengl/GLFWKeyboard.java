@@ -4,9 +4,7 @@ import java.nio.ByteBuffer;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCharCallback;
-import org.lwjgl.glfw.GLFWCharCallbackI;
 import org.lwjgl.glfw.GLFWKeyCallback;
-import org.lwjgl.glfw.GLFWKeyCallbackI;
 import org.lwjgl.input.Keyboard;
 
 public class GLFWKeyboard {

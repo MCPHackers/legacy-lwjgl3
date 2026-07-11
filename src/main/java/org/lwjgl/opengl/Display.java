@@ -324,8 +324,8 @@ public final class Display {
 		display_impl.createWindow(mode, tmp_parent, getWindowX(), getWindowY());
 		window_created = true;
 
-		width = Display.getDisplayMode().getWidth();
-		height = Display.getDisplayMode().getHeight();
+		width = display_impl.getWidth();
+		height = display_impl.getHeight();
 
 		setTitle(title);
 		initControls();
@@ -629,6 +629,10 @@ public final class Display {
 				throw new IllegalStateException("Display not created");
 
 			// We paint only when the window is visible or dirty
+
+			if (processMessages)
+				processMessages();
+
 			if (display_impl.isVisible() || display_impl.isDirty()) {
 				try {
 					swapBuffers();
@@ -637,7 +641,7 @@ public final class Display {
 				}
 			}
 
-			window_resized = !isFullscreen() && parent == null && display_impl.wasResized();
+			window_resized = parent == null && display_impl.wasResized();
 
 			if (window_resized) {
 				width = display_impl.getWidth();
@@ -649,9 +653,6 @@ public final class Display {
 				parent_resized = false;
 				window_resized = true;
 			}
-
-			if (processMessages)
-				processMessages();
 		}
 	}
 
@@ -1157,10 +1158,6 @@ public final class Display {
 	 */
 	public static int getWidth() {
 
-		if (Display.isFullscreen()) {
-			return Display.getDisplayMode().getWidth();
-		}
-
 		if (parent != null) {
 			return parent.getWidth();
 		}
@@ -1178,10 +1175,6 @@ public final class Display {
 	 * This value will be updated after a call to Display.update().
 	 */
 	public static int getHeight() {
-
-		if (Display.isFullscreen()) {
-			return Display.getDisplayMode().getHeight();
-		}
 
 		if (parent != null) {
 			return parent.getHeight();
