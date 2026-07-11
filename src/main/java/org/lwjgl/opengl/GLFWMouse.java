@@ -143,11 +143,16 @@ public class GLFWMouse {
 		GLFW.glfwGetCursorPos(handle, x_coord, y_coord);
 		this.last_x = (int)scaledWidth(x_coord[0]);
 		this.last_y = transformY((int)scaledHeight(y_coord[0]));
+		this.reset();
 	}
 
 	public void grabMouse(boolean grab) {
+		long handle = display.getHandle();
 		this.grab = grab;
 		GLFW.glfwSetInputMode(display.getHandle(), GLFW.GLFW_CURSOR, grab ? GLFW.GLFW_CURSOR_DISABLED : GLFW.GLFW_CURSOR_NORMAL);
+		GLFW.glfwSetCursorPos(handle, 0, 0);
+		last_x = 0;
+		last_y = transformY(0);
 		this.reset();
 	}
 
